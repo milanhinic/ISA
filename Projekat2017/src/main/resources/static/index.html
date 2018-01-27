@@ -3,9 +3,10 @@
 <head>
 
 	<meta http-equiv="Cоntent-Type" content="text/html" charset="utf-8">
-	<title>Bioslopi i Pozorista</title>
+	<title>Bioskopi i Pozorista</title>
 			
     <link rel="stylesheet" href="bootstrap-3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="app/css/mainStyleSheet.css">
 	<script type="text/javascript" src="angular/angular.min.js"></script>
 	<script type="text/javascript" src="angular/angular-route.js"></script>
 	<script type="text/javascript" src="jquery/jquery-3.3.1.min.js"></script>
@@ -13,39 +14,43 @@
 	
 	
 </head>
-<body>
+<body class="pozadina1">
 	
 	<div>
 	
 		<nav class="navbar navbar-default">
 		  	<div class="container-fluid">
-		  		<a href="#" class="navbar-left"><img src="slika2.jpeg" height="50" width="70"></a>
+		  		<a href="#" class="navbar-left"><img src="images/logo1.jpg" height="50" width="70"></a>
 		    	<div class="navbar-header" style="padding-left:5px" >
-		      		<a class="navbar-brand" href="#">Pozorista/Bioskopi</a>
+		      		<a class="navbar-brand" href="#" >Bioskopi/Pozorista</a>
 		    	</div>
 		    	<ul class="nav navbar-nav">
-		      		<li><a href="#/">Pocetna Stranica</a></li>
-		      		<li><a href="#/">Registracija</a></li>
-		      		<li><a href="#/">Moja stranica</a></li>
+		      		<li><a href="#/"><p>Bioskopi</p></a></li>
+		      		<li><a href="#/"><p>Pozorista</p></a></li>
+		      		<li><a href="#/"><p>Fan-zona</p></a></li>
 		    	</ul>
 		    	<ul class="nav navbar-nav navbar-right">
 		    		<li >
-		    			<p class="navbar-text" >Imate nalog?</p>
+		    			<p class="navbar-text">Imate nalog?</p>
 		    		</li>
 		    		<li >
-		    			<a href="#/logovanje" >Prijavite se</a>
+		    			<a href="#/logovanje" ><p>Prijavite se</p></a>
 		    		</li>
 		    		<li >
 		    			<p class="navbar-text" >Prijavljeni ste kao : </p>
 		    		</li>
 		    		<li class="dropdown" >
-		    			<a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" >{{prijavljeniKorisnik.kime}}<span class="caret"></span></a>
-		    			<ul class="dropdown-menu">
-		    				<li><a href="#">Napravi podforum</a></li>
-		    				<li><a href="#">Promena uloge</a></li>
-		    				<li><a href="#" >Pregledaj zalbe</a></li>
-		   					<li><a href="#">Posalji poruku</a></li>
-		   					<li><a href="#">Pretraga sadrzaja</a></li>
+		    			<a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" >Korisnik<span class="caret"></span></a>
+		    			<ul class="dropdown-menu pozadina3">
+		    				<li><a href="#">Moj profil</a></li>
+		    				<li><a href="#">Prijatelji</a></li>
+		    				<li><a href="#">Rezervacije</a></li>
+		    				<li><a href="#">Rezervacije</a></li>
+		    				<li class="divider"></li>
+		   					<li><a href="#">Registruj pozoriste/bioskop</a></li>
+		   					<li><a href="#">Registruj administratora</a></li>
+		   					<li><a href="#">Pristup fan-zoni</a></li>
+		   					<li><a href="#"></a></li>
 		   					<li class="divider"></li>
 		   					<li><a href="#">Odjavite se</a></li>
 		   				</ul>
@@ -53,8 +58,26 @@
 		    	</ul>
 		  	</div>
 		</nav>
-	
-		<p>Nesto hehe jhfkbgrtirnj </p>
+		
+		<div class="container">
+			<div class="well pozadina2 gap-top offset-lg-3">
+			    <div class="row">
+			        <div class="col-lg-5">
+			            <a href="/bioskopi" class="">
+				            <h4 class="naslov set-center">Bioskopi</h4>
+				            <img src="images/bioskopi.jpg" height="300" width="450">
+        				</a>
+			        </div>
+			        <div class="col-lg-2"></div>
+			        <div class="col-lg-5">
+			            <a href="#" class="">
+				            <h4 class="naslov set-center">Pozorista</h4>
+				            <img src="images/pozorista.jpg" height="300" width="450">
+        				</a>
+			        </div>
+			    </div>
+			</div>
+		</div>
 	
 	</div>
 	

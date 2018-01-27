@@ -1,0 +1,51 @@
+@CHARSET "ISO-8859-1";
+
+.navbar-default {
+    background-color: #A7CDC2;
+    border-color: #52615E;
+    color: #00264d;
+    font-family: Helvetica;
+}
+
+.navbar-default .navbar-brand, .navbar-default .navbar-text, .navbar-default a p{
+    color: #00264d;
+    font-family: Helvetica;
+}
+
+.pozadina1{
+	background-color: #00264d;
+    border-color: #00264d;
+}
+
+.pozadina2{
+	background-color: #ff9900;
+    border-color: #d46611;
+}
+
+.pozadina3{
+	background-color: #A7CDC2;
+    border-color: #52615E;
+}
+
+.naslov {
+	font-family: Helvetica;
+	font-size: 24px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 700;
+	color: #00264d;
+}
+
+.nav1 {
+    color: #00264d;
+    font-family: Helvetica;
+}
+
+.gap-top{
+	margin-top:50px; 
+}
+
+.set-center {
+    text-align: center;
+}
+
