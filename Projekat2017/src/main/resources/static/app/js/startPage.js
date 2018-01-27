@@ -1,4 +1,4 @@
-var mainModule = angular.module('mainModule', [ 'ngCookies', 'ngRoute', 'ngStorage' ]);
+var mainModule = angular.module('mainModule', [ 'ngRoute' ]);
 
 mainModule.config(function($routeProvider) {
 
