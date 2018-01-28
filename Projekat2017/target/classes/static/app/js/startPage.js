@@ -1,4 +1,4 @@
-var mainModule = angular.module('mainModule', [ 'ngRoute' ]);
+var mainModule = angular.module('mainModule', [ 'ngRoute', 'ngStorage' ]);
 
 mainModule.config(function($routeProvider) {
 
@@ -9,11 +9,11 @@ mainModule.config(function($routeProvider) {
 	}).when('/logovanje', {
 		templateUrl : 'app/pages/login.html'
 	}).when('/bioskopi', {
-		templateUrl : 'app/pages/bioskopi.html'
+		templateUrl : 'app/pages/pozBio.html'
 	}).when('/pozorista', {
-		templateUrl : 'app/pages/pozorista.html'
+		templateUrl : 'app/pages/pozBio.html'
 	}).otherwise({
-		templateUrl : 'app/pages/osnova.html'
+		redirectTo : '/'
 	});
 
 });
