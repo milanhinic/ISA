@@ -1,4 +1,5 @@
 mainModule.controller('mc1', function($scope, $window, $location, $http, $localStorage ) {
+	$localStorage.rootUrl = 'http://localhost:8081/bioskopi-pozorista.com/';
 	
 	$scope.prikaziBioskope = function() {
 		$localStorage.tipPB = 'B';
@@ -15,15 +16,14 @@ mainModule.controller('mc1', function($scope, $window, $location, $http, $localS
 mainModule.controller('bioskopi1', function($scope, $window, $location, $http, $localStorage ) {
 
 	$scope.pozBios = {};
-	$scope.brojPB = 0;
 	
 	$scope.init = function() {
 		
 		if($localStorage.tipPB == 'B'){
 		
 			$http({
-				method : 'GET',
-				url : 'http://localhost:8081/bioskopi-pozorista.com/app/bioskopi'
+				method : 'POST',
+				url : $localStorage.rootUrl+'app/bioskopi'
 			}).success(function(data) {
 				$scope.pozBios = data;
 				console.log($scope.pozBios);
@@ -35,7 +35,7 @@ mainModule.controller('bioskopi1', function($scope, $window, $location, $http, $
 			
 			$http({
 				method : 'GET',
-				url : 'http://localhost:8081/bioskopi-pozorista.com/app/pozorista'
+				url : $localStorage.rootUrl+'app/pozorista'
 			}).success(function(data) {
 				$scope.pozBios = data;
 				console.log($scope.pozBios);

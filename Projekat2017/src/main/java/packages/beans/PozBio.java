@@ -1,20 +1,45 @@
 package packages.beans;
 
-public class PozBio {
+import java.io.Serializable;
 
-	private String id;
-	private String tip; 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+import packages.enumerations.PozBioTip;
+
+@Entity
+public class PozBio implements Serializable{
+
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
+	
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private PozBioTip tip; 
+	
+	@Column(nullable = false)
 	private String naziv;
+	
+	@Column(nullable = false)
 	private String adresa;
+	
+	@Column(nullable = true)
 	private String opis;
 	
 	public PozBio() {
 		
 	}
 	
-	public PozBio(String id, String tip, String naziv, String adresa, String opis) {
+	public PozBio(PozBioTip tip, String naziv, String adresa, String opis) {
 		super();
-		this.id = id;
 		this.tip = tip;
 		this.naziv = naziv;
 		this.adresa = adresa;
@@ -23,19 +48,19 @@ public class PozBio {
 
 
 
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
-	public String getTip() {
+	public PozBioTip getTip() {
 		return tip;
 	}
 
-	public void setTip(String tip) {
+	public void setTip(PozBioTip tip) {
 		this.tip = tip;
 	}
 
@@ -61,6 +86,11 @@ public class PozBio {
 
 	public void setOpis(String opis) {
 		this.opis = opis;
+	}
+
+	@Override
+	public String toString() {
+		return "PozBio [id=" + id + ", tip=" + tip + ", naziv=" + naziv + ", adresa=" + adresa + ", opis=" + opis + "]";
 	}
 	
 	
