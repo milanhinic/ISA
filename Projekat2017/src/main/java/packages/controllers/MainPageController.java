@@ -20,7 +20,7 @@ public class MainPageController {
 	@Autowired
 	PozBioService pbs;
 	
-	@RequestMapping(value = "bioskopi", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "bioskopi", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public Page<PozBio> vratiBioskope() {
 		
