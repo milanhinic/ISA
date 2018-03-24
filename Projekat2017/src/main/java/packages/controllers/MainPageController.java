@@ -24,12 +24,12 @@ public class MainPageController {
 	@ResponseBody
 	public Page<PozBio> vratiBioskope() {
 		
-		/*
-		for(int i = 1; i <= 20; i++) {
-			PozBio noviBioskop = new PozBio(PozBioTip.BIO, "Bioskop Broj "+i, "Adresa "+i+" bb", "Ukratko o Bioskopu Broj "+i+"...");
-			//pbs.addPozBio(noviBioskop);
-		}*/
 		
+		/*for(int i = 1; i <= 20; i++) {
+			PozBio noviBioskop = new PozBio(PozBioTip.BIO, "Bioskop Broj "+i, "Adresa "+i+" bb", "Ukratko o Bioskopu Broj "+i+"...");
+			pbs.addPozBio(noviBioskop);
+		}
+		*/
 		return pbs.getPozBioList(PozBioTip.BIO, new PageRequest(0, 10));
 	}
 	
