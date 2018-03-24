@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Implementation-Title: Projekat ISA 2017
 Implementation-Version: 0.0.1-SNAPSHOT
-Built-By: marija
+Built-By: D1
 Implementation-Vendor-Id: org.ftn.isa_projekat
 Build-Jdk: 1.8.0_161
 Implementation-URL: http://projects.spring.io/spring-boot/Projekat2017
