@@ -14,40 +14,41 @@ import javax.persistence.Id;
 import packages.enumerations.KorisnikTip;
 import packages.enumerations.RegKorisnikStatus;
 
+
 @Entity
 public class Korisnik implements Serializable{
-
+	
 	private static final long serialVersionUID = 1L;
-
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-	@Column(nullable=false)
+	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
-	private KorisnikTip tip;
+	private KorisnikTip tip; 
 	
-	@Column(nullable=false, unique=true, length=90)
+	@Column(nullable = false, unique = true, length = 90)
 	private String email;
 	
-	@Column(nullable=false, length=30)
+	@Column(nullable = false, length = 30)
 	private char[] lozinka;
 	
-	@Column(nullable=false, length=30)
+	@Column(nullable = false, length = 30)
 	private String ime;
 	
-	@Column(nullable=false, length=30)
+	@Column(nullable = false, length = 30)
 	private String prezime;
 	
-	@Column(nullable=false, length=60)
+	@Column(nullable = false, length = 60)
 	private String grad;
 	
-	@Column(nullable=false, length=20)
+	@Column(nullable = true, length = 20)
 	private String telefon;
 	
-	@Column(nullable=false)
+	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
-	private RegKorisnikStatus status;
+	private RegKorisnikStatus status; 
 	
 	public Korisnik() {
 		
@@ -130,7 +131,7 @@ public class Korisnik implements Serializable{
 	public void setTelefon(String telefon) {
 		this.telefon = telefon;
 	}
-	
+
 	public RegKorisnikStatus getStatus() {
 		return status;
 	}
@@ -142,7 +143,8 @@ public class Korisnik implements Serializable{
 	@Override
 	public String toString() {
 		return "Korisnik [id=" + id + ", tip=" + tip + ", email=" + email + ", lozinka=" + Arrays.toString(lozinka)
-				+ ", ime=" + ime + ", prezime=" + prezime + ", grad=" + grad + ", telefon=" + telefon + ", status=" + status +"]";
+				+ ", ime=" + ime + ", prezime=" + prezime + ", grad=" + grad + ", telefon=" + telefon + ", status="
+				+ status + "]";
 	}
 	
 }
