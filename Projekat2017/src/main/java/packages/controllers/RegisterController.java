@@ -26,21 +26,44 @@ public class RegisterController {
 	@Autowired
 	KorisnikService korisnikService;
 
-	@RequestMapping(value = "registracija", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "registracija", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Boolean> registrujKorisnika(@RequestBody Korisnik korisnik) {
 		
-		if(korisnikService.getKorisnikByEmail(korisnik.getEmail())!=null) {
-			HttpHeaders httpHeader = new HttpHeaders();
-			httpHeader.add("message", "Ova email adresa je vec iskoriscena");
+		HttpHeaders httpHeader = new HttpHeaders();
+		httpHeader.add("message", "Korisnik uspesno registrovan");
+		if(korisnikService.getKorisnikByEmail(korisnik.getEmail())!=null) {		
+			httpHeader.set("message", "Ova email adresa je vec iskoriscena");
 			return new ResponseEntity<Boolean>(false, httpHeader, HttpStatus.OK);
+		}else if(!korisnik.getEmail().matches("[a-zA-z0-9._]{0,64}@[a-z]{2,10}(\\.[a-z]{2,10})+")) {
+			httpHeader.set("message", "Email nije unet u validnoj formi");
+			return new ResponseEntity<Boolean>(false, httpHeader, HttpStatus.OK);
+		}else if(!korisnik.getTelefon().isEmpty()) {
+			if(!korisnik.getTelefon().matches("\\+?[0-9]{6,12}")) {
+				httpHeader.set("message", "Telefon nije unet u validnoj formi");
+				return new ResponseEntity<Boolean>(false, httpHeader, HttpStatus.OK);
+			}
+		}else{
+			korisnik.setTelefon(null);
 		}
-		
+		if(korisnik.getEmail().isEmpty() || korisnik.getLozinka().length==0 || korisnik.getIme().isEmpty() || korisnik.getPrezime().isEmpty() || korisnik.getGrad().isEmpty()){
+			httpHeader.set("message", "Niste uneli sva obavezna polja");
+			return new ResponseEntity<Boolean>(false, httpHeader, HttpStatus.OK);
+		}else if(korisnik.getEmail().length()>90 || korisnik.getLozinka().length < 8 || korisnik.getLozinka().length > 30 || korisnik.getIme().length() > 30 || korisnik.getPrezime().length() > 30 || korisnik.getGrad().length() > 60) {
+			httpHeader.set("message", "Uneli ste nedozvoljenu duzinu karaktera kod nekog polja");
+			return new ResponseEntity<Boolean>(false, httpHeader, HttpStatus.OK);		
+		}
+	
 		korisnik.setTip(KorisnikTip.RK);
 		korisnik.setStatus(RegKorisnikStatus.N);
-			
-		korisnik = korisnikService.addKorisnik(korisnik);
-	
-		return new ResponseEntity<Boolean>(true,HttpStatus.OK);
+		
+		try {
+			korisnik = korisnikService.addKorisnik(korisnik);
+		}catch(Exception e){
+			httpHeader.set("message", "Greska kod unosa podataka");
+			return new ResponseEntity<Boolean>(false, httpHeader, HttpStatus.OK);		
+		}
+		
+		return new ResponseEntity<Boolean>(true,httpHeader, HttpStatus.OK);
 	}
 	
 }
