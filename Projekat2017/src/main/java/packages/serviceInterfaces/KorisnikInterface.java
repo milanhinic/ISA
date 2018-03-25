@@ -7,4 +7,6 @@ public interface KorisnikInterface {
 	public Korisnik addKorisnik(Korisnik korisnik);
 	
 	public Korisnik getKorisnikByEmail(String email);
+	
+	public Korisnik getKorisnik(Long id);
 }

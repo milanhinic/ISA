@@ -11,7 +11,7 @@ import packages.serviceInterfaces.KorisnikInterface;
 public class KorisnikService implements KorisnikInterface{
 	
 	@Autowired
-	KorisnikRepository korisnikRepository;
+	private KorisnikRepository korisnikRepository;
 	
 	@Override
 	public Korisnik addKorisnik(Korisnik korisnik) {
@@ -23,6 +23,12 @@ public class KorisnikService implements KorisnikInterface{
 	public Korisnik getKorisnikByEmail(String email) {
 		
 		return korisnikRepository.findByEmail(email);
+	}
+
+	@Override
+	public Korisnik getKorisnik(Long id) {
+		
+		return korisnikRepository.findOne(id);
 	}
 
 	
