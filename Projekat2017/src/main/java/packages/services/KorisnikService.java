@@ -12,10 +12,19 @@ public class KorisnikService implements KorisnikInterface{
 	
 	@Autowired
 	KorisnikRepository korisnikRepository;
-
+	
 	@Override
-	public Korisnik addKorisnik(Korisnik korisnik) {	
+	public Korisnik addKorisnik(Korisnik korisnik) {
+		
 		return korisnikRepository.save(korisnik);
 	}
 
+	@Override
+	public Korisnik getKorisnikByEmail(String email) {
+		
+		return korisnikRepository.findByEmail(email);
+	}
+
+	
+	
 }

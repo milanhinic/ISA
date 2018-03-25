@@ -1,7 +1,10 @@
 package packages.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,12 +27,20 @@ public class RegisterController {
 	KorisnikService korisnikService;
 
 	@RequestMapping(value = "registracija", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public void registrujKorisnika(@RequestBody Korisnik korisnik) {
+	public ResponseEntity<Boolean> registrujKorisnika(@RequestBody Korisnik korisnik) {
+		
+		if(korisnikService.getKorisnikByEmail(korisnik.getEmail())!=null) {
+			HttpHeaders httpHeader = new HttpHeaders();
+			httpHeader.add("message", "Ova email adresa je vec iskoriscena");
+			return new ResponseEntity<Boolean>(false, httpHeader, HttpStatus.OK);
+		}
 		
 		korisnik.setTip(KorisnikTip.RK);
 		korisnik.setStatus(RegKorisnikStatus.N);
-		
-		korisnikService.addKorisnik(korisnik);
+			
+		korisnik = korisnikService.addKorisnik(korisnik);
+	
+		return new ResponseEntity<Boolean>(true,HttpStatus.OK);
 	}
 	
 }
