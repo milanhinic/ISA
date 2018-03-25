@@ -40,8 +40,10 @@ public class PozBioService implements PozBioInterface {
 	}
 	
 	@Override
-	public ArrayList<PozBio> getAllPozBios() {
-		
+	public ArrayList<PozBio> getAllPozBios(int mode) {
+		if (mode == 1) {
+			
+		}
 		return (ArrayList<PozBio>) pbr.findAll();
 	}
 
