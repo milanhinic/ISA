@@ -31,6 +31,12 @@ public class KorisnikService implements KorisnikInterface{
 		return korisnikRepository.findOne(id);
 	}
 
+	@Override
+	public Korisnik getKorisnikByEmailAndLozinka(String email, char[] cs) {
+
+		return korisnikRepository.findByEmailAndLozinka(email, cs);
+	}
+
 	
 	
 }

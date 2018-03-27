@@ -66,9 +66,7 @@ public class Korisnik implements Serializable{
 	@Enumerated(EnumType.STRING)
 	private RegKorisnikStatus status; 
 	
-	public Korisnik() {
-		
-	}
+	public Korisnik() {}
 
 	public Korisnik(Long id, KorisnikTip tip, String email, char[] lozinka, String ime, String prezime, String grad,
 			String telefon, RegKorisnikStatus status) {

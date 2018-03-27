@@ -47,6 +47,9 @@ public class RegisterController {
 		if(result.hasErrors()) {
 			httpHeader.set("message", result.getAllErrors().get(0).getDefaultMessage());
 			return new ResponseEntity<Boolean>(false,httpHeader, HttpStatus.OK);
+		}else if(korisnikService.getKorisnikByEmail(korisnik.getEmail())!=null) {		
+			httpHeader.set("message", "Ova email adresa je vec iskoriscena");
+			return new ResponseEntity<Boolean>(false, httpHeader, HttpStatus.OK);
 		}
 	
 		if(korisnik.getTelefon() != null && korisnik.getTelefon().isEmpty())
