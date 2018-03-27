@@ -10,9 +10,13 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import packages.enumerations.KorisnikTip;
 import packages.enumerations.RegKorisnikStatus;
+import packages.validators.EmailValidation;
+import packages.validators.TelephoneValidation;
 
 
 @Entity
@@ -28,21 +32,33 @@ public class Korisnik implements Serializable{
 	@Enumerated(EnumType.STRING)
 	private KorisnikTip tip; 
 	
+	@NotNull(message = "Morate uneti email adresu")
+	@Size(max = 90, message = "Uneli ste prevelik broj karaktera za email adresu")
+	@EmailValidation
 	@Column(nullable = false, unique = true, length = 90)
 	private String email;
 	
+	@NotNull(message = "Morate uneti lozinku")
+	@Size(min = 8, max = 30, message = "Uneli ste nedozvoljen broj karaktera za lozinku")
 	@Column(nullable = false, length = 30)
 	private char[] lozinka;
 	
+	@NotNull(message = "Morate uneti ime")
+	@Size(min = 1,max = 30,message = "Uneli ste nedozvoljen broj karaktera za ime")
 	@Column(nullable = false, length = 30)
 	private String ime;
 	
+	@NotNull(message = "Morate uneti prezime")
+	@Size(min = 1,max = 30,message = "Uneli ste nedozvoljen broj karaktera za prezime")
 	@Column(nullable = false, length = 30)
 	private String prezime;
 	
+	@NotNull(message = "Morate uneti grad")
+	@Size(min = 1,max = 60,message = "Uneli ste nedozvoljen broj karaktera za grad")
 	@Column(nullable = false, length = 60)
 	private String grad;
 	
+	@TelephoneValidation
 	@Column(nullable = true, length = 20)
 	private String telefon;
 	
