@@ -9,6 +9,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import packages.enumerations.PozBioTip;
 
@@ -22,13 +24,18 @@ public class PozBio implements Serializable{
 	private Long id;
 	
 	@Column(nullable = false)
+	@NotNull(message = "Neophodno je uneti TIP.")
 	@Enumerated(EnumType.STRING)
 	private PozBioTip tip; 
 	
 	@Column(nullable = false)
+	@NotNull(message = "Neophodno je uneti NAZIV.")
+	@Size(max = 90, message = "Prekoracen maksimalan broj karaktera za polje NAZIV.")
 	private String naziv;
-	
+
 	@Column(nullable = false)
+	@NotNull(message = "Neophodno je uneti ADRESU.")
+	@Size(max = 90, message = "Prekoracen maksimalan broj karaktera za polje ADRESA.")
 	private String adresa;
 	
 	@Column(nullable = true)

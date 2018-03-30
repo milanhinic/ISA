@@ -35,15 +35,12 @@ public class PozBioService implements PozBioInterface {
 	@Override
 	public Page<PozBio> getPozBioList(PozBioTip tip, Pageable pageable) {
 
-		Assert.notNull(pageable, "Naispravno navedena duzina liste za vracanje pozorista/bioskopa!");
 		return pbr.findByTip(tip, pageable);
 	}
 	
 	@Override
-	public ArrayList<PozBio> getAllPozBios(int mode) {
-		if (mode == 1) {
-			
-		}
+	public ArrayList<PozBio> getAllPozBios() {
+		
 		return (ArrayList<PozBio>) pbr.findAll();
 	}
 

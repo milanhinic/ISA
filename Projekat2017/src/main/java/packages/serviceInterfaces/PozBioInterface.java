@@ -16,7 +16,7 @@ public interface PozBioInterface {
 	
 	public Page<PozBio> getPozBioList(PozBioTip tip, Pageable pageable);
 	
-	public ArrayList<PozBio> getAllPozBios(int mode);
+	public ArrayList<PozBio> getAllPozBios();
 	
 	public int getRowCount();
 
