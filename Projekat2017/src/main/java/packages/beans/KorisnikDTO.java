@@ -1,14 +1,27 @@
 package packages.beans;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import packages.enumerations.KorisnikTip;
+import packages.validators.TelephoneValidation;
 
 public class KorisnikDTO {
 
-	private KorisnikTip tip;
+	private KorisnikTip tip;	
+	@NotNull(message = "Morate uneti email adresu")
+	@Size(max = 90, message = "Uneli ste prevelik broj karaktera za email adresu")
 	private String email;
+	@NotNull(message = "Morate uneti ime")
+	@Size(min = 1,max = 30,message = "Uneli ste nedozvoljen broj karaktera za ime")
 	private String ime;
+	@NotNull(message = "Morate uneti prezime")
+	@Size(min = 1,max = 30,message = "Uneli ste nedozvoljen broj karaktera za prezime")
 	private String prezime;
+	@NotNull(message = "Morate uneti grad")
+	@Size(min = 1,max = 60,message = "Uneli ste nedozvoljen broj karaktera za grad")
 	private String grad;
+	@TelephoneValidation
 	private String telefon;
 	
 	public KorisnikDTO() {}
@@ -22,7 +35,7 @@ public class KorisnikDTO {
 		this.grad = grad;
 		this.telefon = telefon;
 	}
-
+	
 	public KorisnikTip getTip() {
 		return tip;
 	}
