@@ -1,10 +1,10 @@
 package packages.repositories;
 
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import packages.beans.Korisnik;
 
-public interface KorisnikRepository extends PagingAndSortingRepository<Korisnik,Long>{
+public interface KorisnikRepository extends JpaRepository<Korisnik,Long>{
 
 	Korisnik findByEmail(String email);
 	

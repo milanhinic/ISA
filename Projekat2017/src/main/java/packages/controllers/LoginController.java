@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import packages.beans.CustomUserDetailsFactory;
 import packages.beans.Korisnik;
-import packages.beans.KorisnikDTO;
-import packages.components.KorisnikToKorisnikDTO;
 import packages.enumerations.RegKorisnikStatus;
+import packages.security.TokenUtils;
 import packages.services.KorisnikService;
 
 @RestController
@@ -27,32 +27,29 @@ public class LoginController {
 	private KorisnikService korisnikService; 
 	
 	@Autowired
-	private KorisnikToKorisnikDTO toKorisnikDTO;
+	private TokenUtils tokenUtils;
 	
 	@RequestMapping(value = "login", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<KorisnikDTO> prijaviKorisnika(@RequestBody Korisnik korisnik) {
+	public ResponseEntity<String> prijaviKorisnika(@RequestBody Korisnik korisnik) {
 		
 		korisnik = korisnikService.getKorisnikByEmailAndLozinka(korisnik.getEmail(), korisnik.getLozinka());
-		KorisnikDTO korisnikDTO = null;
+		String token = null;
 		HttpHeaders httpHeader = new HttpHeaders();
 		httpHeader.add("message", "Uspesno logovanje!");
 		
 		if(korisnik==null) {
 			httpHeader.set("message", "Neispravno uneseni email ili lozinka.");
-			return new ResponseEntity<KorisnikDTO>(null,httpHeader,HttpStatus.OK);
+			return new ResponseEntity<String>(token,httpHeader,HttpStatus.OK);
 		}else {
 			if(korisnik.getStatus().equals(RegKorisnikStatus.N)) {
 				httpHeader.set("message", "Vas nalog nije aktiviran.");
-				return new ResponseEntity<KorisnikDTO>(null,httpHeader,HttpStatus.OK);			
+				return new ResponseEntity<String>(token,httpHeader,HttpStatus.OK);			
 			}
 			
-			//Cookie cookie = new Cookie("sessionId", korisnik.getId().toString());
-			//response.addCookie(cookie);
-			korisnikDTO = toKorisnikDTO.convert(korisnik);
-			
+			token = tokenUtils.generateToken(CustomUserDetailsFactory.createCustomUserDetails(korisnik));
 		}
-		
-		return new ResponseEntity<KorisnikDTO>(korisnikDTO,httpHeader,HttpStatus.OK);
+				
+		return new ResponseEntity<String>(token, httpHeader,HttpStatus.OK);
 	}
 	
 	
