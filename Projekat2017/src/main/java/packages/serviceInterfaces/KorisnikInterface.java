@@ -11,4 +11,5 @@ public interface KorisnikInterface {
 	public Korisnik getKorisnik(Long id);
 	
 	public Korisnik getKorisnikByEmailAndLozinka(String email, char[] cs);
+	
 }

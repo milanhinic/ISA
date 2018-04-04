@@ -35,8 +35,5 @@ public class KorisnikService implements KorisnikInterface{
 	public Korisnik getKorisnikByEmailAndLozinka(String email, char[] cs) {
 
 		return korisnikRepository.findByEmailAndLozinka(email, cs);
-	}
-
-	
-	
+	}	
 }

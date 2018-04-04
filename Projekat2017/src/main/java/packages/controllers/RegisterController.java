@@ -21,10 +21,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import packages.beans.Korisnik;
+import packages.beans.RegistrovaniKorisnik;
 import packages.enumerations.KorisnikTip;
 import packages.enumerations.RegKorisnikStatus;
 import packages.services.EmailService;
 import packages.services.KorisnikService;
+import packages.services.RegistrovaniKorisnikService;
 
 import org.springframework.http.MediaType;
 
@@ -37,6 +39,9 @@ public class RegisterController {
 	
 	@Autowired
 	private EmailService emailService;
+	
+	@Autowired
+	private RegistrovaniKorisnikService registrovaniKorisnikService;
 	
 	@RequestMapping(value = "registracija", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Boolean> registrujKorisnika(@RequestBody @Valid Korisnik korisnik, BindingResult result) {
@@ -82,6 +87,8 @@ public class RegisterController {
 			if(korisnik.getStatus().equals(RegKorisnikStatus.N)) {
 				korisnik.setStatus(RegKorisnikStatus.A);
 				korisnikService.addKorisnik(korisnik);
+				RegistrovaniKorisnik regKorisnik = new RegistrovaniKorisnik(null,korisnik,0);
+				registrovaniKorisnikService.addRegistrovaniKorisnik(regKorisnik);
 				try {
 					httpServletResponse.sendRedirect("http://localhost:4200/aktiviranNalog");
 				} catch (IOException e) {
