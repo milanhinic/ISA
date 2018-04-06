@@ -3,8 +3,11 @@ package packages.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import packages.beans.Korisnik;
 import packages.beans.RegistrovaniKorisnik;
+import packages.beans.Zahtev;
 import packages.repositories.RegistrovaniKorisnikRepository;
+import packages.repositories.ZahtevRepository;
 import packages.serviceInterfaces.RegistrovaniKorisnikInterface;
 
 @Service
@@ -12,6 +15,9 @@ public class RegistrovaniKorisnikService implements RegistrovaniKorisnikInterfac
 
 	@Autowired
 	RegistrovaniKorisnikRepository registrovaniKorisnikRepository;
+	
+	@Autowired
+	ZahtevRepository zahtevRepository;
 	
 	@Override
 	public RegistrovaniKorisnik addRegistrovaniKorisnik(RegistrovaniKorisnik regKorisnik) {
@@ -23,6 +29,30 @@ public class RegistrovaniKorisnikService implements RegistrovaniKorisnikInterfac
 	public RegistrovaniKorisnik getRegKorisnik(Long id) {
 
 		return registrovaniKorisnikRepository.findOne(id);
+	}
+
+	@Override
+	public Zahtev getZahtevByPosiljalacAndPrimalac(RegistrovaniKorisnik posiljalac, RegistrovaniKorisnik primalac) {
+
+		return zahtevRepository.findByPosiljalacAndPrimalac(posiljalac, primalac);
+	}
+
+	@Override
+	public Zahtev addZahtev(Zahtev zahtev) {
+
+		return zahtevRepository.save(zahtev);
+	}
+
+	@Override
+	public RegistrovaniKorisnik getRegKorisnikByKorisnikId(Korisnik k) {
+		
+		return registrovaniKorisnikRepository.findByRegKorisnikId(k);
+	}
+
+	@Override
+	public void deleteZahtev(Zahtev zahtev) {
+		
+		zahtevRepository.delete(zahtev);
 	}
 	
 }

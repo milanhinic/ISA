@@ -8,7 +8,6 @@ import packages.validators.TelephoneValidation;
 
 public class KorisnikDTO {
 
-	private KorisnikTip tip;	
 	@NotNull(message = "Morate uneti email adresu")
 	@Size(max = 90, message = "Uneli ste prevelik broj karaktera za email adresu")
 	private String email;
@@ -26,22 +25,13 @@ public class KorisnikDTO {
 	
 	public KorisnikDTO() {}
 
-	public KorisnikDTO(KorisnikTip tip, String email, String ime, String prezime, String grad, String telefon) {
+	public KorisnikDTO(String email, String ime, String prezime, String grad, String telefon) {
 		super();
-		this.tip = tip;
 		this.email = email;
 		this.ime = ime;
 		this.prezime = prezime;
 		this.grad = grad;
 		this.telefon = telefon;
-	}
-	
-	public KorisnikTip getTip() {
-		return tip;
-	}
-
-	public void setTip(KorisnikTip tip) {
-		this.tip = tip;
 	}
 
 	public String getEmail() {

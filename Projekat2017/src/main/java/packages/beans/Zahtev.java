@@ -23,9 +23,14 @@ public class Zahtev implements Serializable{
 	@ManyToOne(optional = false)
 	private RegistrovaniKorisnik primalac;
 	
-	
-	
 	public Zahtev() {}
+	
+	public Zahtev(Long id, RegistrovaniKorisnik posiljalac, RegistrovaniKorisnik primalac) {
+		super();
+		this.id = id;
+		this.posiljalac = posiljalac;
+		this.primalac = primalac;
+	}
 
 	public Long getId() {
 		return id;
