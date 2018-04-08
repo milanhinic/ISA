@@ -1,5 +1,7 @@
 package packages.repositories;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -10,5 +12,11 @@ public interface RegistrovaniKorisnikRepository extends JpaRepository<Registrova
 
 	@Query("from RegistrovaniKorisnik where reg_korisnik_id = ?1")
 	public RegistrovaniKorisnik findByRegKorisnikId(Korisnik id);
+	
+	@Query("select reg.prijatelji from RegistrovaniKorisnik as reg INNER JOIN reg.reg_korisnik_id as k where k = ?1")
+	public Page<RegistrovaniKorisnik> getPrijatelji(Korisnik korisnik,Pageable pageable);
+	
+	@Query("select count(elements(reg.prijatelji)) from RegistrovaniKorisnik as reg where reg.reg_korisnik_id = ?1")
+	public Long getPrijateljiBroj(Korisnik korisnik);
 	
 }

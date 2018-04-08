@@ -1,6 +1,7 @@
 package packages.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import packages.beans.Korisnik;
@@ -8,6 +9,7 @@ import packages.beans.RegistrovaniKorisnik;
 import packages.beans.Zahtev;
 import packages.repositories.RegistrovaniKorisnikRepository;
 import packages.repositories.ZahtevRepository;
+import org.springframework.data.domain.Page;
 import packages.serviceInterfaces.RegistrovaniKorisnikInterface;
 
 @Service
@@ -53,6 +55,30 @@ public class RegistrovaniKorisnikService implements RegistrovaniKorisnikInterfac
 	public void deleteZahtev(Zahtev zahtev) {
 		
 		zahtevRepository.delete(zahtev);
+	}
+
+	@Override
+	public Page<Korisnik> getPosiljaociFromZahtev(RegistrovaniKorisnik primalac, Pageable pageable) {
+		
+		return zahtevRepository.findByPrimalac(primalac, pageable);
+	}
+
+	@Override
+	public Long getPosiljaociCount(RegistrovaniKorisnik primalac) {
+		
+		return zahtevRepository.countByPrimalac(primalac);
+	}
+
+	@Override
+	public Page<RegistrovaniKorisnik> getPrijatelji(Korisnik korisnik, Pageable pageable) {
+		
+		return registrovaniKorisnikRepository.getPrijatelji(korisnik, pageable);
+	}
+
+	@Override
+	public Long getPrijateljiBroj(Korisnik korisnik) {
+		
+		return registrovaniKorisnikRepository.getPrijateljiBroj(korisnik);
 	}
 	
 }

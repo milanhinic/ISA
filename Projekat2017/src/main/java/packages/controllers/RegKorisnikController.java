@@ -1,16 +1,21 @@
 package packages.controllers;
 
+import java.util.ArrayList;
+
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,6 +26,7 @@ import packages.beans.KorisnikDTO;
 import packages.beans.RegistrovaniKorisnik;
 import packages.beans.Zahtev;
 import packages.components.KorisnikToKorisnikDTO;
+import packages.enumerations.KorisnikTip;
 import packages.enumerations.RegKorisnikStatus;
 import packages.security.TokenUtils;
 import packages.services.KorisnikService;
@@ -439,5 +445,165 @@ public class RegKorisnikController {
 		
 		return new ResponseEntity<String>("N",HttpStatus.OK);
 	}
+	
+	@PreAuthorize("hasAuthority('RK')")
+	@RequestMapping(value="vratiKorisnike/{page}", method=RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ArrayList<KorisnikDTO> vratiKorisnike(@PathVariable int page, ServletRequest request){
+		
+		HttpServletRequest httpRequest = (HttpServletRequest) request;
+		String token = httpRequest.getHeader("token");
+		
+		if(token == null) {
+			return null;
+		}
+		
+		String email = tokenUtils.getUsernameFromToken(token);
+
+		Korisnik logovanKorisnik = korisnikService.getKorisnikByEmail(email);
+		
+		if(logovanKorisnik==null) {
+			return null;
+		}
+		
+		if(logovanKorisnik.getStatus().equals(RegKorisnikStatus.N)) {
+			return null;
+		}
+		
+		Long regKorisnikCount = korisnikService.getRegKorisnikCount(RegKorisnikStatus.A, KorisnikTip.RK, email);
+		
+		if(regKorisnikCount<=0) {
+			return null;
+		}else if(page<=0) {
+			return null;
+		}
+		
+		int poslednja = (int)Math.ceil(regKorisnikCount/10)+1;
+		Page<Korisnik> korisnici = null;
+			
+		if(page>poslednja) {
+			korisnici = korisnikService.getKorisnikList(RegKorisnikStatus.A, KorisnikTip.RK, logovanKorisnik.getEmail(), new PageRequest(poslednja-1, 10));
+		}else {
+			korisnici = korisnikService.getKorisnikList(RegKorisnikStatus.A, KorisnikTip.RK, logovanKorisnik.getEmail(), new PageRequest(page-1, 10));
+		}
+		
+		ArrayList<KorisnikDTO> retVal = new ArrayList<KorisnikDTO>();
+		
+		for(Korisnik k : korisnici.getContent()) {
+			KorisnikDTO kDTO = toKorisnikDTO.convert(k);
+			retVal.add(kDTO);
+		}
+			
+		return retVal;	
+	}
+	
+	@PreAuthorize("hasAuthority('RK')")
+	@RequestMapping(value="vratiPosiljaoce/{page}", method=RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ArrayList<KorisnikDTO> vratiPosiljaoce(@PathVariable int page, ServletRequest request){
+		
+		HttpServletRequest httpRequest = (HttpServletRequest) request;
+		String token = httpRequest.getHeader("token");
+		
+		if(token == null) {
+			return null;
+		}
+		
+		String email = tokenUtils.getUsernameFromToken(token);
+
+		Korisnik logovanKorisnik = korisnikService.getKorisnikByEmail(email);
+		
+		if(logovanKorisnik==null) {
+			return null;
+		}
+		
+		if(logovanKorisnik.getStatus().equals(RegKorisnikStatus.N)) {
+			return null;
+		}
+		
+		RegistrovaniKorisnik logovanReg = regKorisnikService.getRegKorisnikByKorisnikId(logovanKorisnik);
+		
+		if(logovanReg==null) {
+			return null;
+		}
+		
+		Long posiljaociCount = regKorisnikService.getPosiljaociCount(logovanReg);
+		
+		if(posiljaociCount<=0) {
+			return null;
+		}else if(page<=0) {
+			return null;
+		}
+		
+		int poslednja = (int)Math.ceil(posiljaociCount/10)+1;
+		Page<Korisnik> korisnici = null;
+			
+		if(page>poslednja) {
+			korisnici = regKorisnikService.getPosiljaociFromZahtev(logovanReg, new PageRequest(poslednja-1,10));
+		}else {
+			korisnici = regKorisnikService.getPosiljaociFromZahtev(logovanReg, new PageRequest(page-1,10));
+		}
+		
+		ArrayList<KorisnikDTO> retVal = new ArrayList<KorisnikDTO>();
+		
+		for(Korisnik k : korisnici.getContent()) {
+			KorisnikDTO kDTO = toKorisnikDTO.convert(k);
+			retVal.add(kDTO);
+		}
+			
+		return retVal;	
+	}
+	
+	@PreAuthorize("hasAuthority('RK')")
+	@RequestMapping(value="vratiPrijatelje/{page}", method=RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ArrayList<KorisnikDTO> vratiPrijatelje(@PathVariable int page, ServletRequest request){
+		
+		HttpServletRequest httpRequest = (HttpServletRequest) request;
+		String token = httpRequest.getHeader("token");
+		
+		if(token == null) {
+			return null;
+		}
+		
+		String email = tokenUtils.getUsernameFromToken(token);
+
+		Korisnik logovanKorisnik = korisnikService.getKorisnikByEmail(email);
+		
+		if(logovanKorisnik==null) {
+			return null;
+		}
+		
+		if(logovanKorisnik.getStatus().equals(RegKorisnikStatus.N)) {
+			return null;
+		}
+		
+		Long prijateljiCount = regKorisnikService.getPrijateljiBroj(logovanKorisnik);
+		
+		if(prijateljiCount<=0) {
+			return null;
+		}else if(page<=0) {
+			return null;
+		}
+		
+		int poslednja = (int)Math.ceil(prijateljiCount/10)+1;
+		
+		Page<RegistrovaniKorisnik> prijatelji = null;
+		
+		if(page>poslednja) {
+			prijatelji = regKorisnikService.getPrijatelji(logovanKorisnik, new PageRequest(poslednja-1,10));
+		}else {
+			prijatelji = regKorisnikService.getPrijatelji(logovanKorisnik, new PageRequest(page-1,10));
+		}
+		
+		ArrayList<KorisnikDTO> retVal = new ArrayList<KorisnikDTO>();
+		
+		for(RegistrovaniKorisnik regKor : prijatelji.getContent()) {
+			Korisnik k = regKor.getReg_korisnik_id();
+			KorisnikDTO kDTO = toKorisnikDTO.convert(k);
+			retVal.add(kDTO);
+		}
+			
+		return retVal;
+	}
+	
+	
 	
 }
