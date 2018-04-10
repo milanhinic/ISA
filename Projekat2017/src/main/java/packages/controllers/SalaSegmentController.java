@@ -48,4 +48,22 @@ public class SalaSegmentController {
 		
 		return ssr.getSalasByPozBio(pozBio);
 	}
+	
+	@RequestMapping(value = "vratiJednuSalu/{salaId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public Sala vratiJednuSalu(@PathVariable int salaId){
+		
+		System.out.println(salaId);
+		
+		return ssr.getSala(new Long(salaId));
+	}
+	
+	@RequestMapping(value = "izmeniSalu/{salaId}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public Sala izmeniSalu(@RequestBody Sala novaSala, @PathVariable int salaId){
+		
+		System.out.println(salaId +" "+novaSala.toString() );
+		
+		return ssr.addSala(novaSala);
+	}
 }
