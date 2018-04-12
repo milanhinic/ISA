@@ -26,9 +26,11 @@ public class Segment implements Serializable{
 	private int broj_sedista;
 	
 	@ManyToOne(optional = false)
+	@NotNull(message = "More pripadati SALI.")
 	private Sala sala;
 	
 	@ManyToOne(optional = false)
+	@NotNull(message = "Mora posedovati TIP.")
 	private TipSegmenta tip;
 	
 	public Segment() {}
