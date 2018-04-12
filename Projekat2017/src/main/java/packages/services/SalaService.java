@@ -8,10 +8,10 @@ import org.springframework.stereotype.Service;
 import packages.beans.PozBio;
 import packages.beans.Sala;
 import packages.repositories.SalaRepository;
-import packages.serviceInterfaces.SalaSegmentInterface;
+import packages.serviceInterfaces.SalaInterface;
 
 @Service
-public class SalaSegmentService implements SalaSegmentInterface{
+public class SalaService implements SalaInterface{
 	
 	@Autowired
 	private SalaRepository sr;

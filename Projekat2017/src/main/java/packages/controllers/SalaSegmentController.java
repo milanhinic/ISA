@@ -20,14 +20,14 @@ import org.springframework.web.bind.annotation.RestController;
 import packages.beans.PozBio;
 import packages.beans.Sala;
 import packages.services.PozBioService;
-import packages.services.SalaSegmentService;
+import packages.services.SalaService;
 
 @RestController
 @RequestMapping(value = "app/")
 public class SalaSegmentController {
 	
 	@Autowired
-	private SalaSegmentService ssr;
+	private SalaService ssr;
 	
 	@Autowired
 	private PozBioService pbs;
