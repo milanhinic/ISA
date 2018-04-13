@@ -46,10 +46,23 @@ public class KorisnikService implements KorisnikInterface{
 		
 		return korisnikRepository.findByStatusAndTipAndEmailNot(status, tip, email, pageable);
 	}
-
+	
+	
 	@Override
 	public Long getRegKorisnikCount(RegKorisnikStatus status,KorisnikTip tip,String email) {
 		
 		return korisnikRepository.countByStatusAndTipAndEmailNot(status, tip, email);
+	}
+
+	@Override
+	public Page<Korisnik> getAllKorisnikList(RegKorisnikStatus status, KorisnikTip tip, Pageable pageable) {
+		
+		return korisnikRepository.findByStatusAndTip(status, tip, pageable);
+	}
+
+	@Override
+	public int deleteById(Long id) {
+		return korisnikRepository.deleteById(id);
+		
 	}	
 }

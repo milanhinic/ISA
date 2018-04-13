@@ -79,6 +79,79 @@ public class RegisterController {
 		return new ResponseEntity<Boolean>(true,httpHeader, HttpStatus.OK);
 	}
 	
+	@RequestMapping(value = "registracija/afz", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Boolean> registrujAdministratoraFz(@RequestBody @Valid Korisnik korisnik, BindingResult result) {
+		
+		HttpHeaders httpHeader = new HttpHeaders();
+		httpHeader.add("message", "Korisnik uspesno registrovan");
+		
+		if(result.hasErrors()) {
+			httpHeader.set("message", result.getAllErrors().get(0).getDefaultMessage());
+			return new ResponseEntity<Boolean>(false,httpHeader, HttpStatus.OK);
+		}else if(korisnikService.getKorisnikByEmail(korisnik.getEmail())!=null) {		
+			httpHeader.set("message", "Ova email adresa je vec iskoriscena");
+			return new ResponseEntity<Boolean>(false, httpHeader, HttpStatus.OK);
+		}
+	
+		if(korisnik.getTelefon() != null && korisnik.getTelefon().isEmpty())
+			korisnik.setTelefon(null);
+		
+		korisnik.setTip(KorisnikTip.AF);
+		korisnik.setStatus(RegKorisnikStatus.A);
+		
+		try {
+			korisnik = korisnikService.addKorisnik(korisnik);
+		}catch(Exception e){
+			httpHeader.set("message", "Greska kod unosa podataka");
+			return new ResponseEntity<Boolean>(false, httpHeader, HttpStatus.OK);		
+		}
+		/*
+		try {
+			emailService.sendConfirmationMail(korisnik);
+		} catch (MessagingException e) {
+			System.out.println("Neuspesno poslat mail");
+		}
+		*/
+		return new ResponseEntity<Boolean>(true,httpHeader, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "registracija/asis", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Boolean> registrujAdministatoraSis(@RequestBody @Valid Korisnik korisnik, BindingResult result) {
+		
+		HttpHeaders httpHeader = new HttpHeaders();
+		httpHeader.add("message", "Korisnik uspesno registrovan");
+		
+		if(result.hasErrors()) {
+			httpHeader.set("message", result.getAllErrors().get(0).getDefaultMessage());
+			return new ResponseEntity<Boolean>(false,httpHeader, HttpStatus.OK);
+		}else if(korisnikService.getKorisnikByEmail(korisnik.getEmail())!=null) {		
+			httpHeader.set("message", "Ova email adresa je vec iskoriscena");
+			return new ResponseEntity<Boolean>(false, httpHeader, HttpStatus.OK);
+		}
+	
+		if(korisnik.getTelefon() != null && korisnik.getTelefon().isEmpty())
+			korisnik.setTelefon(null);
+		
+		korisnik.setTip(KorisnikTip.AS);
+		korisnik.setStatus(RegKorisnikStatus.N);
+		
+		try {
+			korisnik = korisnikService.addKorisnik(korisnik);
+		}catch(Exception e){
+			httpHeader.set("message", "Greska kod unosa podataka");
+			return new ResponseEntity<Boolean>(false, httpHeader, HttpStatus.OK);		
+		}
+		/*
+		try {
+			emailService.sendConfirmationMail(korisnik);
+		} catch (MessagingException e) {
+			System.out.println("Neuspesno poslat mail");
+		}
+		*/
+		return new ResponseEntity<Boolean>(true,httpHeader, HttpStatus.OK);
+	}
+	
+	
 	@RequestMapping(value = "aktivirajNalog/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Void> aktivirajKorisnika(@PathVariable long id, HttpServletResponse httpServletResponse) {
 		

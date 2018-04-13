@@ -604,6 +604,65 @@ public class RegKorisnikController {
 		return retVal;
 	}
 	
+	@PreAuthorize("hasAuthority('RK, AS')")
+	@RequestMapping(value="adminFz/stranica/{id}", method=RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public Page<Korisnik> vratiSveAdmFz(@PathVariable int page, ServletRequest request){
+		
+		HttpServletRequest httpRequest = (HttpServletRequest) request;
+		String token = httpRequest.getHeader("token");
+		
+		if(token == null) {
+			return null;
+		}
+		
+		String email = tokenUtils.getUsernameFromToken(token);
+
+		Korisnik logovanKorisnik = korisnikService.getKorisnikByEmail(email);
+		
+		if(logovanKorisnik==null) {
+			return null;
+		}
+		
+		if(logovanKorisnik.getStatus().equals(RegKorisnikStatus.N)) {
+			return null;
+		}
+		
+		if(!logovanKorisnik.getTip().equals(KorisnikTip.AS)) {
+			return null;
+		}
+		
+		
+		Page<Korisnik> retVal = korisnikService.getAllKorisnikList(RegKorisnikStatus.A, KorisnikTip.AF, new PageRequest(page-1, 10));
+		
+		if(retVal.getSize()<=0) {
+			return null;
+		}else if(page<=0) {
+			return null;
+		}
+		/*
+		int poslednja = (int)Math.ceil(prijateljiCount/10)+1;
+		
+		Page<RegistrovaniKorisnik> prijatelji = null;
+		
+		if(page>poslednja) {
+			prijatelji = regKorisnikService.getPrijatelji(logovanKorisnik, new PageRequest(poslednja-1,10));
+		}else {
+			prijatelji = regKorisnikService.getPrijatelji(logovanKorisnik, new PageRequest(page-1,10));
+		}
+		
+		ArrayList<KorisnikDTO> retVal = new ArrayList<KorisnikDTO>();
+		
+		for(RegistrovaniKorisnik regKor : prijatelji.getContent()) {
+			Korisnik k = regKor.getReg_korisnik_id();
+			KorisnikDTO kDTO = toKorisnikDTO.convert(k);
+			retVal.add(kDTO);
+		}
+			
+		*/
+	
+		return retVal;
+	}
+	
 	
 	
 }
