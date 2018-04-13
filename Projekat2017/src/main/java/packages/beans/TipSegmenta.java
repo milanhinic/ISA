@@ -21,8 +21,8 @@ public class TipSegmenta implements Serializable{
 	private Long id;
 	
 	@Column(nullable = false)
-	@NotNull(message = "Neophodno je uneti NAZIV.")
-	@Size(max = 10, message = "Prekoracen maksimalan broj karaktera za polje NAZIV.")
+	@NotNull(message = "Neophodno je uneti NAZIV TIPA.")
+	@Size(max = 30, message = "Prekoracen maksimalan broj karaktera za polje NAZIV TIPA.")
 	private String naziv;
 	
 	@Column(nullable = false)

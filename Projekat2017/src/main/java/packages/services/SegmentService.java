@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import packages.beans.Sala;
 import packages.beans.Segment;
+import packages.beans.TipSegmenta;
 import packages.repositories.SegmentRepository;
 import packages.repositories.SegmentTipRepository;
 import packages.serviceInterfaces.SegmentInterface;
@@ -42,6 +43,30 @@ public class SegmentService implements SegmentInterface{
 	public ArrayList<Segment> getSegmentsBySala(Sala sala) {
 		// TODO Auto-generated method stub
 		return sr.findBySala(sala);
+	}
+
+	@Override
+	public ArrayList<Segment> getSegmentsByTip(TipSegmenta tip) {
+		// TODO Auto-generated method stub
+		return sr.findByTip(tip);
+	}
+
+	@Override
+	public TipSegmenta getTipSegmenta(Long id) {
+		// TODO Auto-generated method stub
+		return str.findOne(id);
+	}
+
+	@Override
+	public TipSegmenta addTipSegmenta(TipSegmenta tipSegmenta) {
+		// TODO Auto-generated method stub
+		return str.save(tipSegmenta);
+	}
+
+	@Override
+	public ArrayList<TipSegmenta> getAllTipSegments() {
+		// TODO Auto-generated method stub
+		return (ArrayList<TipSegmenta>) str.findAll();
 	}
 
 }

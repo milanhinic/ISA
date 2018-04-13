@@ -25,7 +25,7 @@ public class Segment implements Serializable{
 	@NotNull(message = "Neophodno je uneti BROJ SEDISTA.")
 	@Max(5000)
 	@Min(1)
-	private int broj_sedista;
+	private int brojSedista;
 	
 	@ManyToOne(optional = false)
 	@NotNull(message = "More pripadati SALI.")
@@ -39,7 +39,7 @@ public class Segment implements Serializable{
 
 	public Segment(int broj_sedista, Sala sala, TipSegmenta tip) {
 		super();
-		this.broj_sedista = broj_sedista;
+		this.brojSedista = broj_sedista;
 		this.sala = sala;
 		this.tip = tip;
 	}
@@ -52,12 +52,12 @@ public class Segment implements Serializable{
 		this.id = id;
 	}
 
-	public int getBroj_sedista() {
-		return broj_sedista;
+	public int getBrojSedista() {
+		return brojSedista;
 	}
 
-	public void setBroj_sedista(int broj_sedista) {
-		this.broj_sedista = broj_sedista;
+	public void setBroj_sedista(int brojSedista) {
+		this.brojSedista = brojSedista;
 	}
 
 	public Sala getSala() {

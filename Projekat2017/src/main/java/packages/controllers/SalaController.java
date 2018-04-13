@@ -24,7 +24,7 @@ import packages.services.SalaService;
 
 @RestController
 @RequestMapping(value = "app/")
-public class SalaSegmentController {
+public class SalaController {
 	
 	@Autowired
 	private SalaService ssr;
