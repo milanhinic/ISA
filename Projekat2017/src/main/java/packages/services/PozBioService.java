@@ -45,9 +45,9 @@ public class PozBioService implements PozBioInterface {
 	}
 
 	@Override
-	public int getRowCount() {
+	public Long getRowCount(PozBioTip tip) {
 		
-		return (int) pbr.count();
+		return pbr.countByTip(tip);
 	}
 
 	
