@@ -20,10 +20,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import packages.beans.Sala;
+import packages.beans.Sediste;
 import packages.beans.Segment;
 import packages.beans.TipSegmenta;
 import packages.dto.SegmentDTO;
 import packages.services.SalaService;
+import packages.services.SedisteService;
 import packages.services.SegmentService;
 
 @RestController
@@ -36,8 +38,11 @@ public class SegmentController {
 	@Autowired
 	private SalaService sas;
 	
+	@Autowired
+	private SedisteService sds;
+	
 	@RequestMapping(value="vratiSegmenteSala/{idSala}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ArrayList<Segment>> vratiSegmenteZaSalu(@PathVariable int idSala) {
+	public ResponseEntity<ArrayList<SegmentDTO>> vratiSegmenteZaSalu(@PathVariable int idSala) {
 		
 		HttpHeaders header = new HttpHeaders();
 		
@@ -53,9 +58,18 @@ public class SegmentController {
 			return new ResponseEntity<>(null, header, HttpStatus.OK);
 		}
 		
-		ArrayList<Segment> retVal = ss.getSegmentsBySala(sala);
+		ArrayList<SegmentDTO> retVal = new ArrayList<SegmentDTO>();
+		ArrayList<Segment> segmenti = ss.getSegmentsBySala(sala);
 		
-		return new ResponseEntity<ArrayList<Segment>>(retVal, HttpStatus.OK);
+		if(!segmenti.isEmpty()) {
+			for(Segment tempSeg : segmenti) {
+				int brSed = sds.getBrojSedistaBySegment(tempSeg);
+				SegmentDTO sedSeg = new SegmentDTO(brSed, tempSeg);
+				retVal.add(sedSeg);
+			}
+		}
+		
+		return new ResponseEntity<ArrayList<SegmentDTO>>(retVal, HttpStatus.OK);
 	}
 	
 	@RequestMapping(value="vratiTipoveSegmenata", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -68,21 +82,27 @@ public class SegmentController {
 	
 	@RequestMapping(value="sacuvajSegment/{idSala}/{idTip}", method= RequestMethod.POST, consumes= MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ResponseEntity<Segment> sacuvajSegment(@RequestBody @Valid SegmentDTO noviSegment, @PathVariable int idSala, @PathVariable int idTip, BindingResult result){
-						
+	public ResponseEntity<Segment> sacuvajSegment(@PathVariable int idSala, @PathVariable int idTip, @RequestParam int brojSedista){
 		HttpHeaders header = new HttpHeaders();
 		
+		int br;
+		
+		try {
+			br =Integer.parseInt(""+brojSedista);
+		}catch (NumberFormatException e) {
+			header.add("message", "Nevalidan broj sedista!");
+			return new ResponseEntity<>(null, header, HttpStatus.OK);
+		}
+		
+		
+		if(brojSedista < 1 || brojSedista > 5000) {
+			header.add("message", "Nedozvoljen broj sedista!");
+			return new ResponseEntity<>(null, header, HttpStatus.OK);
+		}
+		
+		System.out.println(br);
+		
 		Sala sala = sas.getSala(new Long(idSala));
-		
-		if(result.hasErrors()) {
-			header.add("message", "Segment nije validan!");
-			return new ResponseEntity<>(null, header, HttpStatus.OK);
-		}
-		
-		if(noviSegment.getBrojSedista() < 1 || noviSegment.getBrojSedista() > 5000) {
-			header.add("message", "Nedozvoljen broj segmenata!");
-			return new ResponseEntity<>(null, header, HttpStatus.OK);
-		}
 		
 		if(sala == null) {
 			header.add("message", "Nepostojeca sala!");
@@ -96,12 +116,14 @@ public class SegmentController {
 			return new ResponseEntity<>(null, header, HttpStatus.OK);
 		}
 		
-		Segment retVal = new Segment();
-		retVal.setBroj_sedista(noviSegment.getBrojSedista());
-		retVal.setSala(sala);
-		retVal.setTip(tip);
+		Segment retVal = new Segment(sala, tip);
 		
 		retVal = ss.addSegment(retVal);
+		
+		for(int i = 0; i < br; i++) {
+			Sediste sediste = new Sediste(retVal); 
+			sds.addSediste(sediste);
+		}
 		
 		return new ResponseEntity<Segment>(retVal, HttpStatus.OK);
 	}

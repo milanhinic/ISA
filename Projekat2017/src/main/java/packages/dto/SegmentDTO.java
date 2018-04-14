@@ -4,6 +4,8 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import packages.beans.Segment;
+
 
 public class SegmentDTO {
 	
@@ -12,11 +14,15 @@ public class SegmentDTO {
 	@Min(1)
 	private int brojSedista;
 	
+	@NotNull(message = "Neophodno je uneti SEGMENT.")
+	private Segment segment;
+	
 	public SegmentDTO() {}
 
-	public SegmentDTO(int broj_sedista) {
+	public SegmentDTO(int broj_sedista, Segment segment) {
 		super();
 		this.brojSedista = broj_sedista;
+		this.segment = segment;
 	}
 
 	public int getBrojSedista() {
@@ -25,6 +31,14 @@ public class SegmentDTO {
 
 	public void setBrojSedista(int brojSedista) {
 		this.brojSedista = brojSedista;
+	}
+
+	public Segment getSegment() {
+		return segment;
+	}
+
+	public void setSegment(Segment segment) {
+		this.segment = segment;
 	}
 	
 }
