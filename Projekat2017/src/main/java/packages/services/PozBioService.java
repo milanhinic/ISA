@@ -50,6 +50,18 @@ public class PozBioService implements PozBioInterface {
 		return pbr.countByTip(tip);
 	}
 
+	@Override
+	public Page<PozBio> getPozBioListNaziv(PozBioTip tip, String naziv, Pageable pageable) {
+		
+		return pbr.findByTipAndNazivLikeIgnoreCase(tip, "%"+naziv.trim()+"%", pageable);
+	}
+
+	@Override
+	public Long getPozBioCountNaziv(PozBioTip tip, String naziv) {
+		
+		return pbr.countByTipAndNazivLikeIgnoreCase(tip, "%"+naziv.trim()+"%");
+	}
+
 	
 
 }

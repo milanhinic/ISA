@@ -32,7 +32,53 @@ public class PozBioController {
 	@ResponseBody
 	public Page<PozBio> vratiBioskope(@PathVariable int id) {
 		
-		Page<PozBio> retVal = pbs.getPozBioList(PozBioTip.BIO, new PageRequest(id-1, 10));
+		Long bioskopiCount = pbs.getRowCount(PozBioTip.BIO);
+		
+		if(bioskopiCount<=0) {
+			return null;
+		}else if(id<=0) {
+			return null;
+		}
+		
+		int poslednja = (int)Math.ceil(bioskopiCount/10)+1;
+		
+		Page<PozBio> retVal = null;
+		
+		if(id>poslednja) {
+			retVal = pbs.getPozBioList(PozBioTip.BIO, new PageRequest(poslednja-1, 10));
+		}else {
+			retVal = pbs.getPozBioList(PozBioTip.BIO, new PageRequest(id-1, 10));
+		}
+			
+		if(retVal.getSize() <= 0) {
+			return null;
+		}
+		
+		return retVal;
+	}
+	
+	@RequestMapping(value = "bioskopiPretraga/stranica={page}&kriterijum={naz}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public Page<PozBio> vratiBioskopeNaziv(@PathVariable("page") int page, @PathVariable("naz") String naziv) {
+		
+		Long bioskopiCount = pbs.getPozBioCountNaziv(PozBioTip.BIO, naziv);
+		
+		if(bioskopiCount<=0) {
+			return null;
+		}else if(page<=0) {
+			return null;
+		}
+		
+		int poslednja = (int)Math.ceil(bioskopiCount/10)+1;
+		
+		Page<PozBio> retVal = null;
+		
+		if(page>poslednja) {
+			retVal = pbs.getPozBioListNaziv(PozBioTip.BIO, naziv, new PageRequest(poslednja-1, 10));
+		}else {
+			retVal = pbs.getPozBioListNaziv(PozBioTip.BIO, naziv, new PageRequest(page-1, 10));
+		}
+			
 		if(retVal.getSize() <= 0) {
 			return null;
 		}
@@ -44,13 +90,60 @@ public class PozBioController {
 	@ResponseBody
 	public Page<PozBio> vratiPozorista(@PathVariable int id) {
 		
-		Page<PozBio> retVal = pbs.getPozBioList(PozBioTip.POZ, new PageRequest(id-1, 10));
+		Long pozoristaCount = pbs.getRowCount(PozBioTip.POZ);
+		
+		if(pozoristaCount<=0) {
+			return null;
+		}else if(id<=0) {
+			return null;
+		}
+		
+		int poslednja = (int)Math.ceil(pozoristaCount/10)+1;
+		
+		Page<PozBio> retVal = null;
+		
+		if(id>poslednja) {
+			retVal = pbs.getPozBioList(PozBioTip.POZ, new PageRequest(poslednja-1, 10));
+		}else {
+			retVal = pbs.getPozBioList(PozBioTip.POZ, new PageRequest(id-1, 10));
+		}
+			
 		if(retVal.getSize() <= 0) {
 			return null;
 		}
 		
 		return retVal;
 	}
+	
+	@RequestMapping(value = "pozoristaPretraga/stranica={page}&kriterijum={naz}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public Page<PozBio> vratiPozoristaNaziv(@PathVariable("page") int page, @PathVariable("naz") String naziv) {
+		
+		Long pozoristaCount = pbs.getPozBioCountNaziv(PozBioTip.POZ, naziv);
+		
+		if(pozoristaCount<=0) {
+			return null;
+		}else if(page<=0) {
+			return null;
+		}
+		
+		int poslednja = (int)Math.ceil(pozoristaCount/10)+1;
+		
+		Page<PozBio> retVal = null;
+		
+		if(page>poslednja) {
+			retVal = pbs.getPozBioListNaziv(PozBioTip.POZ, naziv, new PageRequest(poslednja-1, 10));
+		}else {
+			retVal = pbs.getPozBioListNaziv(PozBioTip.POZ, naziv, new PageRequest(page-1, 10));
+		}
+			
+		if(retVal.getSize() <= 0) {
+			return null;
+		}
+		
+		return retVal;
+	}
+	
 	
 	@RequestMapping(value = "vratiJedan/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
