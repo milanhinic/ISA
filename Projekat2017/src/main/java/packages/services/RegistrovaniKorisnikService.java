@@ -1,5 +1,7 @@
 package packages.services;
 
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -70,7 +72,7 @@ public class RegistrovaniKorisnikService implements RegistrovaniKorisnikInterfac
 	}
 
 	@Override
-	public Page<RegistrovaniKorisnik> getPrijatelji(Korisnik korisnik, Pageable pageable) {
+	public Page<Korisnik> getPrijatelji(Korisnik korisnik, Pageable pageable) {
 		
 		return registrovaniKorisnikRepository.getPrijatelji(korisnik, pageable);
 	}
@@ -80,5 +82,19 @@ public class RegistrovaniKorisnikService implements RegistrovaniKorisnikInterfac
 		
 		return registrovaniKorisnikRepository.getPrijateljiBroj(korisnik);
 	}
+
+	@Override
+	public Page<Korisnik> getPrijateljiByNameAndSurname(Korisnik korisnik, String imeprezime, Pageable pageable) {
+		
+		return registrovaniKorisnikRepository.getPrijateljiByNameAndSurname(korisnik,"%"+imeprezime.trim()+"%", pageable);
+	}
+
+	@Override
+	public Long countPrijateljiByNameAndSurname(Korisnik korisnik, String imeprezime) {
+		
+		return registrovaniKorisnikRepository.countPrijateljiByNameAndSurname(korisnik, "%"+imeprezime.trim()+"%");
+	}
+
+	
 	
 }

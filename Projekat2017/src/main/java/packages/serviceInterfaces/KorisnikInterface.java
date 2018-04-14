@@ -21,4 +21,8 @@ public interface KorisnikInterface {
 	
 	public Long getRegKorisnikCount(RegKorisnikStatus status,KorisnikTip tip,String email);
 	
+	public Page<Korisnik> getKorisniciImePrezime(RegKorisnikStatus status, KorisnikTip tip, String email, String imeprezime, Pageable pageable);
+	
+	public Long countKorisniciImePrezime(RegKorisnikStatus status, KorisnikTip tip, String email, String imeprezime);
+	
 }
