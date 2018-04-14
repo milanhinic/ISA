@@ -46,7 +46,8 @@ public class KorisnikService implements KorisnikInterface{
 		
 		return korisnikRepository.findByStatusAndTipAndEmailNotOrderByImeAscPrezimeAsc(status, tip, email, pageable);
 	}
-
+	
+	
 	@Override
 	public Long getRegKorisnikCount(RegKorisnikStatus status,KorisnikTip tip,String email) {
 		
@@ -54,6 +55,7 @@ public class KorisnikService implements KorisnikInterface{
 	}
 
 	@Override
+
 	public Page<Korisnik> getKorisniciImePrezime(RegKorisnikStatus status, KorisnikTip tip, String email,
 			String imeprezime, Pageable pageable) {
 		
@@ -65,5 +67,15 @@ public class KorisnikService implements KorisnikInterface{
 			String imeprezime) {
 		
 		return korisnikRepository.getKorisniciCountByStatusAndTipAndEmailNotAndNameSurname(status, tip, email, "%"+imeprezime.trim()+"%");
+	}
+	public Page<Korisnik> getAllKorisnikList(RegKorisnikStatus status, KorisnikTip tip, Pageable pageable) {
+		
+		return korisnikRepository.findByStatusAndTip(status, tip, pageable);
+	}
+
+	@Override
+	public int deleteById(Long id) {
+		return korisnikRepository.deleteById(id);
+		
 	}	
 }

@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 @Entity
@@ -30,6 +31,9 @@ public class RegistrovaniKorisnik implements Serializable{
 	
 	@ManyToMany
 	private Set<RegistrovaniKorisnik> prijatelji;
+	
+	@OneToMany
+	private Set<Oglas> licniOglasi;
 	
 	public RegistrovaniKorisnik(Long id, Korisnik reg_korisnik_id, int br_bodova) {
 		super();
@@ -69,4 +73,14 @@ public class RegistrovaniKorisnik implements Serializable{
 	public void setPrijatelji(Set<RegistrovaniKorisnik> prijatelji) {
 		this.prijatelji = prijatelji;
 	}
+
+	public Set<Oglas> getLicniOglasi() {
+		return licniOglasi;
+	}
+
+	public void setLicniOglasi(Set<Oglas> licniOglasi) {
+		this.licniOglasi = licniOglasi;
+	}
+	
+	
 }

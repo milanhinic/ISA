@@ -17,6 +17,8 @@ public interface KorisnikRepository extends JpaRepository<Korisnik,Long>{
 	
 	Page<Korisnik> findByStatusAndTipAndEmailNotOrderByImeAscPrezimeAsc(RegKorisnikStatus status,KorisnikTip tip, String email, Pageable pageable);
 	
+	Page<Korisnik> findByStatusAndTip(RegKorisnikStatus status,KorisnikTip tip, Pageable pageable);
+	
 	Long countByStatusAndTipAndEmailNot(RegKorisnikStatus status,KorisnikTip tip, String email);
 	
 	@Query("from Korisnik k where k.status = ?1 and k.tip = ?2 and k.email != ?3 and (UPPER(CONCAT(k.ime, ' ', k.prezime)) LIKE UPPER(?4) or UPPER(CONCAT(k.prezime, ' ', k.ime)) LIKE UPPER(?4)) order by k.ime, k.prezime asc")
@@ -24,5 +26,7 @@ public interface KorisnikRepository extends JpaRepository<Korisnik,Long>{
 	
 	@Query("select count(k) from Korisnik k where k.status = ?1 and k.tip = ?2 and k.email != ?3 and (UPPER(CONCAT(k.ime, ' ', k.prezime)) LIKE UPPER(?4) or UPPER(CONCAT(k.prezime, ' ', k.ime)) LIKE UPPER(?4))")
 	Long getKorisniciCountByStatusAndTipAndEmailNotAndNameSurname(RegKorisnikStatus status, KorisnikTip tip, String email, String imeprezime);
+	
+	int deleteById(Long id);
 	
 }

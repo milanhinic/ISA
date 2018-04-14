@@ -18,6 +18,6 @@ public interface PozBioInterface {
 	
 	public ArrayList<PozBio> getAllPozBios();
 	
-	public int getRowCount();
+	public Long getRowCount(PozBioTip tip);
 
 }

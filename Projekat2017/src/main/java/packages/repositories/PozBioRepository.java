@@ -12,4 +12,6 @@ public interface PozBioRepository extends JpaRepository<PozBio, Long>{
 	
 	Page<PozBio> findByTip(PozBioTip tip, Pageable pageable);
 	
+	Long countByTip(PozBioTip tip);
+	
 }

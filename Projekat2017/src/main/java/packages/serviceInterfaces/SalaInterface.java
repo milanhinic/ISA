@@ -4,9 +4,10 @@ import java.util.ArrayList;
 
 import packages.beans.PozBio;
 import packages.beans.Sala;
+import packages.beans.Segment;
 
 
-public interface SalaSegmentInterface {
+public interface SalaInterface {
 	
 	public Sala getSala(Long id);
 	
