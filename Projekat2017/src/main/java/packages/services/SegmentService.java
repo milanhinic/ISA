@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import packages.beans.Sala;
 import packages.beans.Segment;
 import packages.beans.TipSegmenta;
+import packages.repositories.SedisteRepository;
 import packages.repositories.SegmentRepository;
 import packages.repositories.SegmentTipRepository;
 import packages.serviceInterfaces.SegmentInterface;
@@ -16,10 +17,11 @@ import packages.serviceInterfaces.SegmentInterface;
 public class SegmentService implements SegmentInterface{
 
 	@Autowired
-	SegmentRepository sr;
+	private SegmentRepository sr;
 	
 	@Autowired
-	SegmentTipRepository str;
+	private SegmentTipRepository str;
+	
 	
 	@Override
 	public Segment getSegment(Long id) {
