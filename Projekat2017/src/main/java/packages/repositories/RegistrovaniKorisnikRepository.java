@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import packages.beans.Korisnik;
+import packages.beans.Oglas;
 import packages.beans.RegistrovaniKorisnik;
 
 public interface RegistrovaniKorisnikRepository extends JpaRepository<RegistrovaniKorisnik,Long>{
@@ -19,4 +20,6 @@ public interface RegistrovaniKorisnikRepository extends JpaRepository<Registrova
 	@Query("select count(elements(reg.prijatelji)) from RegistrovaniKorisnik as reg where reg.reg_korisnik_id = ?1")
 	public Long getPrijateljiBroj(Korisnik korisnik);
 	
+	@Query("select reg.licniOglasi from RegistrovaniKorisnik as reg INNER JOIN ")
+	public Page<Oglas> getOglasi(Korisnik korisnik, Pageable pageable);
 }
