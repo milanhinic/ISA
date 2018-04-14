@@ -122,6 +122,28 @@ public class MainPageController {
 		
 		return retVal;
 	}
+	
+	@RequestMapping(value = "izmeniPozBio", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public ResponseEntity<PozBio> izmeniPozBio(@RequestBody @Valid PozBio pozBio, BindingResult result) {
+		
+		HttpHeaders httpHeader = new HttpHeaders();
+		
+		if(result.hasErrors()) {
+			httpHeader.set("message", result.getAllErrors().get(0).getDefaultMessage());
+			return new ResponseEntity<PozBio>(null, httpHeader, HttpStatus.OK);
+		}else{
+			PozBio retVal = pbs.addPozBio(pozBio);
+			
+			if(retVal != null) {
+				return new ResponseEntity<PozBio>(retVal, httpHeader, HttpStatus.OK);
+			}
+		}
+		
+		httpHeader.add("message", "Neuspesno dodavanje novog pozorista/bioskopa.");
+		return new ResponseEntity<PozBio>(null,httpHeader, HttpStatus.OK);
+	}
+	
 
 	@RequestMapping(value = "adminSis/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
