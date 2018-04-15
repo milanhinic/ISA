@@ -1,6 +1,7 @@
 package packages.services;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,6 +46,12 @@ public class ProjekcijaService implements ProjekcijaInterface{
 	public ArrayList<Projekcija> getProjekcijasBySala(Sala sala) {
 		// TODO Auto-generated method stub
 		return pr.findBySala(sala);
+	}
+
+	@Override
+	public ArrayList<Projekcija> getProjekcijasBetween(Sala sala, Date pocetak, Date kraj) {
+		// TODO Auto-generated method stub
+		return pr.projekcijasBetween(sala, pocetak, kraj);
 	}
 
 }

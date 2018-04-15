@@ -1,6 +1,7 @@
 package packages.serviceInterfaces;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import packages.beans.PredFilm;
 import packages.beans.Projekcija;
@@ -18,5 +19,7 @@ public interface ProjekcijaInterface {
 	public ArrayList<Projekcija> getProjekcijasByPredFilm(PredFilm predFilm);
 	
 	public ArrayList<Projekcija> getProjekcijasBySala(Sala sala);
+	
+	public ArrayList<Projekcija> getProjekcijasBetween(Sala sala, Date pocetak, Date kraj);
 	
 }

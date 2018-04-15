@@ -9,6 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -27,6 +29,7 @@ public class Projekcija implements Serializable{
 	private Sala sala;
 	
 	@Column(nullable = false)
+	@Temporal(TemporalType.TIMESTAMP)
 	@NotNull(message = "Obavezno je izabrati DATUM")
 	private Date datum;
 	

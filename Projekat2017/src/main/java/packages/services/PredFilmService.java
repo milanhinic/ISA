@@ -48,4 +48,10 @@ public class PredFilmService implements PredFilmInterface{
 		return pfr.countByTip(tip);
 	}
 
+	@Override
+	public ArrayList<PredFilm> getAllPredFilmsByTip(PredFilmTip tip) {
+		// TODO Auto-generated method stub
+		return pfr.findByTip(tip);
+	}
+
 }
