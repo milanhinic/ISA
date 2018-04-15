@@ -160,6 +160,63 @@ public class SegmentController {
 		return new ResponseEntity<TipSegmenta>(retVal, HttpStatus.OK);
 	}
 	
+	@RequestMapping(value="vratiSedista/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ArrayList<Sediste>> vratiSedistaZaSegment(@PathVariable int id){
+		
+		HttpHeaders header = new HttpHeaders();
+		
+		Segment segment = ss.getSegment(new Long(id));
+		
+		if(segment == null) {
+			header.add("message", "Segmenta nije validan!");
+			return new ResponseEntity<>(null, header, HttpStatus.OK);
+		}
+		
+		ArrayList<Sediste> retVal = sds.getSedistaBySegment(segment);
+		
+		return new ResponseEntity<ArrayList<Sediste>>(retVal, HttpStatus.OK);
+	}
 	
+	@RequestMapping(value="dodajSedista/{id}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Segment> dodajSedista(@PathVariable int id, @RequestParam int brojSedista){
+		
+		HttpHeaders header = new HttpHeaders();
+		
+		int br;
+		
+		try {
+			br =Integer.parseInt(""+brojSedista);
+		}catch (NumberFormatException e) {
+			header.add("message", "Nevalidan broj sedista!");
+			return new ResponseEntity<>(null, header, HttpStatus.OK);
+		}
+		
+		Segment segment = ss.getSegment(new Long(id));
+		
+		if(segment == null) {
+			header.add("message", "Segmenta nije validan!");
+			return new ResponseEntity<>(null, header, HttpStatus.OK);
+		}
+		
+		for(int i = 0; i < br; i++) { 
+			sds.addSediste(new Sediste(segment));
+		}
+		
+		return new ResponseEntity<Segment>(segment, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="obrisiSedista", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public ResponseEntity<String> obrisiSedista(@RequestBody ArrayList<Long> zaBrisanje){
+		
+		if(!zaBrisanje.isEmpty()){
+			for(Long brisiId : zaBrisanje) {
+				sds.deleteSediste(brisiId);		
+			}
+		}
+		
+		return new ResponseEntity<String>("Brisanje uspesno izvrseno.", HttpStatus.OK);
+	}
+
 
 }

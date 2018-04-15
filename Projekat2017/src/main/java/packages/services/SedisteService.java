@@ -46,4 +46,10 @@ public class SedisteService implements SedisteInterface{
 		return sr.countBySegment(segment);
 	}
 
+	@Override
+	public void deleteSediste(Long id) {
+		// TODO Auto-generated method stub
+		sr.delete(id);
+	}
+
 }
