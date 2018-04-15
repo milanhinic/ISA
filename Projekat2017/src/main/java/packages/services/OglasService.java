@@ -2,12 +2,14 @@ package packages.services;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import packages.beans.Oglas;
 import packages.enumerations.OglasStatus;
 import packages.repositories.OglasRepository;
 import packages.serviceInterfaces.OglasInterface;
 
+@Service
 public class OglasService implements OglasInterface{
 
 	private OglasRepository oglasRepository;

@@ -2,20 +2,21 @@ package packages.serviceInterfaces;
 
 import java.util.ArrayList;
 
+import packages.beans.PredFilm;
 import packages.beans.Projekcija;
+import packages.beans.Sala;
+
 
 public interface ProjekcijaInterface {
 
+	public Projekcija getProjekcija(Long id);
+	
 	public Projekcija addProjekcija(Projekcija projekcija);
 	
-	public ArrayList<Projekcija> getAllProjekcija();
+	public ArrayList<Projekcija> getAllProjekcijas();
+
+	public ArrayList<Projekcija> getProjekcijasByPredFilm(PredFilm predFilm);
 	
-	public ArrayList<Projekcija> getProjekcijaBySala(String salaName);
-	
-	public Projekcija getProjekcijaByFilmPre(int id);
-	
-	public ArrayList<Projekcija> getProjekcijaByVreme(String vreme);
-	
-	
+	public ArrayList<Projekcija> getProjekcijasBySala(Sala sala);
 	
 }

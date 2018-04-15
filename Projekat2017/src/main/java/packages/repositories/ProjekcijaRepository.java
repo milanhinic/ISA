@@ -1,11 +1,18 @@
 package packages.repositories;
 
-import org.springframework.data.repository.PagingAndSortingRepository;
+import java.util.ArrayList;
 
-import packages.beans.Projekcija;;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ProjekcijaRepository extends PagingAndSortingRepository<Projekcija,Long>{
+import packages.beans.PredFilm;
+import packages.beans.Projekcija;
+import packages.beans.Sala;
 
+public interface ProjekcijaRepository extends JpaRepository<Projekcija, Long>{
+
+	public ArrayList<Projekcija> findByPredFilm(PredFilm predFilm);
+	
+	public ArrayList<Projekcija> findBySala(Sala sala);
 	
 	
 }
