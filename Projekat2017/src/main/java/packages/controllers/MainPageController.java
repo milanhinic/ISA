@@ -110,7 +110,7 @@ public class MainPageController {
 		return new ResponseEntity<PozBio>(null,httpHeader, HttpStatus.OK);
 	}
 	
-<<<<<<< HEAD
+
 	
 	@RequestMapping(value = "adminFz/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
@@ -145,7 +145,7 @@ public class MainPageController {
 		return new ResponseEntity<PozBio>(null,httpHeader, HttpStatus.OK);
 	}
 	
-=======
+/*
 	@RequestMapping(value = "izmeniPozBio", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ResponseEntity<PozBio> izmeniPozBio(@RequestBody @Valid PozBio pozBio, BindingResult result) {
@@ -166,7 +166,7 @@ public class MainPageController {
 		httpHeader.add("message", "Neuspesno dodavanje novog pozorista/bioskopa.");
 		return new ResponseEntity<PozBio>(null,httpHeader, HttpStatus.OK);
 	}
->>>>>>> branch 'master' of https://github.com/milanhinic/ISA
+*/
 
 	@RequestMapping(value = "adminSis/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
