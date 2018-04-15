@@ -14,4 +14,8 @@ public interface PozBioRepository extends JpaRepository<PozBio, Long>{
 	
 	Long countByTip(PozBioTip tip);
 	
+	Page<PozBio> findByTipAndNazivLikeIgnoreCase(PozBioTip tip, String naziv, Pageable pageable);
+	
+	Long countByTipAndNazivLikeIgnoreCase(PozBioTip tip, String naziv);
+	
 }

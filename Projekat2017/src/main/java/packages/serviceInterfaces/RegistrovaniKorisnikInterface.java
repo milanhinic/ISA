@@ -1,5 +1,7 @@
 package packages.serviceInterfaces;
 
+import java.util.Set;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -25,9 +27,12 @@ public interface RegistrovaniKorisnikInterface {
 	
 	public Long getPosiljaociCount(RegistrovaniKorisnik primalac);
 	
-	public Page<RegistrovaniKorisnik> getPrijatelji(Korisnik korisnik, Pageable pageable);
+	public Page<Korisnik> getPrijatelji(Korisnik korisnik, Pageable pageable);
 	
 	public Long getPrijateljiBroj(Korisnik korisnik);
 	
+	public Page<Korisnik> getPrijateljiByNameAndSurname(Korisnik korisnik, String imeprezime, Pageable pageable);
 	
+	public Long countPrijateljiByNameAndSurname(Korisnik korisnik, String imeprezime);
+
 }

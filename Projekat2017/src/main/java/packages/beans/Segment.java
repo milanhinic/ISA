@@ -21,12 +21,6 @@ public class Segment implements Serializable{
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-	@Column(nullable = false)
-	@NotNull(message = "Neophodno je uneti BROJ SEDISTA.")
-	@Max(5000)
-	@Min(1)
-	private int brojSedista;
-	
 	@ManyToOne(optional = false)
 	@NotNull(message = "More pripadati SALI.")
 	private Sala sala;
@@ -37,9 +31,8 @@ public class Segment implements Serializable{
 	
 	public Segment() {}
 
-	public Segment(int broj_sedista, Sala sala, TipSegmenta tip) {
+	public Segment(Sala sala, TipSegmenta tip) {
 		super();
-		this.brojSedista = broj_sedista;
 		this.sala = sala;
 		this.tip = tip;
 	}
@@ -50,14 +43,6 @@ public class Segment implements Serializable{
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public int getBrojSedista() {
-		return brojSedista;
-	}
-
-	public void setBroj_sedista(int brojSedista) {
-		this.brojSedista = brojSedista;
 	}
 
 	public Sala getSala() {
