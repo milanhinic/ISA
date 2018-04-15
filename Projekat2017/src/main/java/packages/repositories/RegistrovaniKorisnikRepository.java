@@ -19,7 +19,5 @@ public interface RegistrovaniKorisnikRepository extends JpaRepository<Registrova
 	
 	@Query("select count(elements(reg.prijatelji)) from RegistrovaniKorisnik as reg where reg.reg_korisnik_id = ?1")
 	public Long getPrijateljiBroj(Korisnik korisnik);
-	
-	//@Query("select reg.licniOglasi from RegistrovaniKorisnik as reg INNER JOIN ")
-	//public Page<Oglas> getOglasi(Korisnik korisnik, Pageable pageable);
+
 }
