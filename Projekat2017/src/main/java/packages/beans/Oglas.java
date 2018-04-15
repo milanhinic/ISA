@@ -10,6 +10,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 
 import packages.enumerations.OglasStatus;
@@ -30,8 +31,9 @@ public class Oglas implements Serializable{
 	@Column(nullable = false)
 	private String aktivnoDo;
 	
+	@Lob
 	@Column(nullable = false)
-	private String path;
+	private byte[] path;
 	
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
@@ -50,7 +52,6 @@ public class Oglas implements Serializable{
 		this.naziv = naziv;
 		this.opis = opis;
 		this.aktivnoDo = aktivnoDo;
-		this.path = path;
 		this.status = status;
 	}
 
@@ -84,14 +85,6 @@ public class Oglas implements Serializable{
 
 	public void setAktivnoDo(String aktivnoDo) {
 		this.aktivnoDo = aktivnoDo;
-	}
-
-	public String getPath() {
-		return path;
-	}
-
-	public void setPath(String path) {
-		this.path = path;
 	}
 
 	public OglasStatus getStatus() {

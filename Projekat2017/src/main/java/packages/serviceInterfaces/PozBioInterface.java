@@ -19,5 +19,10 @@ public interface PozBioInterface {
 	public ArrayList<PozBio> getAllPozBios();
 	
 	public Long getRowCount(PozBioTip tip);
+	
+	public Page<PozBio> getPozBioListNaziv(PozBioTip tip, String naziv, Pageable pageable);
+	
+	public Long getPozBioCountNaziv(PozBioTip tip, String naziv);
+	
 
 }

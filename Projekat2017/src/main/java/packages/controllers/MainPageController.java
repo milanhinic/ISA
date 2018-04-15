@@ -24,8 +24,10 @@ import packages.services.KorisnikService;
 @Transactional
 public class MainPageController {
 
+	
 	@Autowired
 	KorisnikService kser;
+
 	
 	@RequestMapping(value = "adminFz/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
