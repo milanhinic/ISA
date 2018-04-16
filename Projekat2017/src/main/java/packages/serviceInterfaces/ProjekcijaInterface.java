@@ -3,6 +3,7 @@ package packages.serviceInterfaces;
 import java.util.ArrayList;
 import java.util.Date;
 
+import packages.beans.PozBio;
 import packages.beans.PredFilm;
 import packages.beans.Projekcija;
 import packages.beans.Sala;
@@ -20,6 +21,6 @@ public interface ProjekcijaInterface {
 	
 	public ArrayList<Projekcija> getProjekcijasBySala(Sala sala);
 	
-	public ArrayList<Projekcija> getProjekcijasBetween(Sala sala, Date pocetak, Date kraj);
+	public ArrayList<Projekcija> getProjekcijasBetween(PozBio pozBio, Date pocetak, Date kraj);
 	
 }

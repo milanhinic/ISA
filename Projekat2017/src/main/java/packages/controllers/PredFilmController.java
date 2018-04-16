@@ -124,5 +124,6 @@ public class PredFilmController {
 		return new ResponseEntity<ArrayList<PredFilm>>(retVal, HttpStatus.OK);
 
 	}
+	
 
 }

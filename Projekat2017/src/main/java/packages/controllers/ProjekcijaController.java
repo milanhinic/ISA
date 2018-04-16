@@ -18,9 +18,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import packages.beans.PozBio;
 import packages.beans.PredFilm;
 import packages.beans.Projekcija;
 import packages.beans.Sala;
+import packages.services.PozBioService;
 import packages.services.PredFilmService;
 import packages.services.ProjekcijaService;
 import packages.services.SalaService;
@@ -38,10 +40,19 @@ public class ProjekcijaController {
 	@Autowired
 	private PredFilmService pfs;
 	
+	@Autowired
+	private PozBioService pbs;
+	
+	
 	@RequestMapping(value="/sacuvajProjekciju", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Projekcija> dodajProjekciju(@RequestParam int idSale, @RequestParam int idPredFilm, @RequestParam String datum) {
 		
 		HttpHeaders header = new HttpHeaders();
+		
+		if(datum == null || datum.isEmpty()) {
+			header.add("message", "Niste izabrali datum!");
+			return new ResponseEntity<>(null, header, HttpStatus.OK);
+		}
 		
 		String tempDat = datum.substring(0, 24);
 		
@@ -120,6 +131,54 @@ public class ProjekcijaController {
 		novaProjekcija = ps.addProjekcija(novaProjekcija);
 
 		return new ResponseEntity<Projekcija>(novaProjekcija, HttpStatus.OK);
+	}
+	
+	
+	@RequestMapping(value = "vratiProjekcijePoDanu", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE )
+	public ResponseEntity<ArrayList<Projekcija>> vratiProjekcijePoDanu(@RequestParam int idPozBio, @RequestParam String datum){
+		
+		System.out.println(idPozBio+" "+datum);
+		
+		HttpHeaders header = new HttpHeaders();
+		
+		if(datum == null || datum.isEmpty()) {
+			header.add("message", "Niste uneli vreme!");
+			return new ResponseEntity<>(null, header, HttpStatus.OK);
+		}
+		
+		String tempDat = datum.substring(0, 16);
+		
+		System.out.println("REZ: "+tempDat);
+		
+		DateFormat formatter = new SimpleDateFormat("E MMM dd yyyy");
+		Date pocetak = null;
+		try {
+			pocetak = (Date)formatter.parse(tempDat);        
+
+		} catch (ParseException e) {
+			header.add("message", "Neispravan format datuma!");
+			return new ResponseEntity<>(null, header, HttpStatus.OK);
+		}
+		
+		long ONE_DAY_IN_MILLIS = 86340000;
+
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(pocetak);
+		long vremePocetka = cal.getTimeInMillis();
+		Date kraj = new Date(vremePocetka + ONE_DAY_IN_MILLIS);
+		
+		System.out.println("***Pocetak: "+pocetak+", kraj: "+kraj);
+		
+		PozBio pozBio = pbs.getPozBio(new Long(idPozBio));
+		
+		if(pozBio == null) {
+			header.add("message", "Birate projekciju za nepostojeci bioskop!");
+			return new ResponseEntity<>(null, header, HttpStatus.OK);
+		}
+		
+		ArrayList<Projekcija> retVal = ps.getProjekcijasBetween(pozBio, pocetak, kraj);
+		
+		return new ResponseEntity<ArrayList<Projekcija>>(retVal, HttpStatus.OK);
 	}
 	
 }

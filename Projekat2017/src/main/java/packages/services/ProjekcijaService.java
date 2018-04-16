@@ -6,6 +6,7 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import packages.beans.PozBio;
 import packages.beans.PredFilm;
 import packages.beans.Projekcija;
 import packages.beans.Sala;
@@ -49,9 +50,9 @@ public class ProjekcijaService implements ProjekcijaInterface{
 	}
 
 	@Override
-	public ArrayList<Projekcija> getProjekcijasBetween(Sala sala, Date pocetak, Date kraj) {
+	public ArrayList<Projekcija> getProjekcijasBetween(PozBio pozBio, Date pocetak, Date kraj) {
 		// TODO Auto-generated method stub
-		return pr.projekcijasBetween(sala, pocetak, kraj);
+		return pr.projekcijasBetween(pozBio, pocetak, kraj);
 	}
 
 }
