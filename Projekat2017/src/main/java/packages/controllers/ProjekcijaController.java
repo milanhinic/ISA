@@ -49,8 +49,10 @@ public class ProjekcijaController {
 		
 		HttpHeaders header = new HttpHeaders();
 		
-		if(datum == null || datum.isEmpty()) {
-			header.add("message", "Niste izabrali datum!");
+		System.out.println(datum.length());
+		
+		if(datum == null || datum.isEmpty() || datum.length() < 24) {
+			header.add("message", "Neispravan datum!");
 			return new ResponseEntity<>(null, header, HttpStatus.OK);
 		}
 		
@@ -79,7 +81,6 @@ public class ProjekcijaController {
 			header.add("message", "Formirate projekciju za nepostojeci entitet!");
 			return new ResponseEntity<>(null, header, HttpStatus.OK);
 		}
-		
 		
 		long ONE_MINUTE_IN_MILLIS = 60000;
 
@@ -137,18 +138,14 @@ public class ProjekcijaController {
 	@RequestMapping(value = "vratiProjekcijePoDanu", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE )
 	public ResponseEntity<ArrayList<Projekcija>> vratiProjekcijePoDanu(@RequestParam int idPozBio, @RequestParam String datum){
 		
-		System.out.println(idPozBio+" "+datum);
-		
 		HttpHeaders header = new HttpHeaders();
 		
-		if(datum == null || datum.isEmpty()) {
-			header.add("message", "Niste uneli vreme!");
+		if(datum == null || datum.isEmpty() || datum.length() < 16) {
+			header.add("message", "Neispravno vreme!");
 			return new ResponseEntity<>(null, header, HttpStatus.OK);
 		}
 		
 		String tempDat = datum.substring(0, 16);
-		
-		System.out.println("REZ: "+tempDat);
 		
 		DateFormat formatter = new SimpleDateFormat("E MMM dd yyyy");
 		Date pocetak = null;
