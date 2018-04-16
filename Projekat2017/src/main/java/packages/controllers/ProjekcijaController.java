@@ -82,7 +82,6 @@ public class ProjekcijaController {
 			return new ResponseEntity<>(null, header, HttpStatus.OK);
 		}
 		
-		
 		long ONE_MINUTE_IN_MILLIS = 60000;
 
 		Calendar cal = Calendar.getInstance();
