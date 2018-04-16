@@ -1,6 +1,7 @@
 package packages.controllers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Set;
 
 import javax.servlet.ServletRequest;
@@ -27,6 +28,7 @@ import packages.beans.KorisnikDTO;
 import packages.beans.RegistrovaniKorisnik;
 import packages.beans.Zahtev;
 import packages.components.KorisnikToKorisnikDTO;
+import packages.dto.LozinkaDTO;
 import packages.enumerations.KorisnikTip;
 import packages.enumerations.RegKorisnikStatus;
 import packages.security.TokenUtils;
@@ -73,7 +75,7 @@ public class RegKorisnikController {
 		return new ResponseEntity<KorisnikDTO>(korisnikDTO, HttpStatus.OK);
 	}
 	
-	@PreAuthorize("hasAuthority('RK')")
+	@PreAuthorize("hasAuthority('RK') or hasAuthority('AU')")
 	@RequestMapping(value = "izmena", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Boolean> izmeniKorisnika(@RequestBody @Valid KorisnikDTO korisnik, BindingResult result){
 		
@@ -102,6 +104,59 @@ public class RegKorisnikController {
 		
 		try {
 			zaIzmenu = korisnikService.addKorisnik(zaIzmenu);
+		}catch(Exception e){
+			httpHeader.set("message", "Greska kod izmene podataka");
+			return new ResponseEntity<Boolean>(false, httpHeader, HttpStatus.OK);		
+		}
+		
+		return new ResponseEntity<Boolean>(true,httpHeader, HttpStatus.OK);
+	}
+	
+	@PreAuthorize("hasAuthority('RK') or hasAuthority('AU')")
+	@RequestMapping(value = "izmenaLozinke", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Boolean> izmeniLozinku(@RequestBody @Valid LozinkaDTO lozinkaDTO, BindingResult result, ServletRequest request){
+		
+		HttpServletRequest httpRequest = (HttpServletRequest) request;
+		String token = httpRequest.getHeader("token");
+		
+		if(token == null) {
+			return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
+		}
+		
+		String email = tokenUtils.getUsernameFromToken(token);
+
+		Korisnik logovanKorisnik = korisnikService.getKorisnikByEmail(email);
+		
+		if(logovanKorisnik==null) {
+			return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
+		}
+		
+		if(logovanKorisnik.getStatus().equals(RegKorisnikStatus.N)){
+			return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
+		}
+		
+		HttpHeaders httpHeader = new HttpHeaders();
+		httpHeader.add("message", "Uspesno izmenjena lozinka");
+			
+		if(result.hasErrors()) {
+			httpHeader.set("message", result.getAllErrors().get(0).getDefaultMessage());
+			return new ResponseEntity<Boolean>(false,httpHeader, HttpStatus.OK);
+		}
+		
+		if(!Arrays.equals(logovanKorisnik.getLozinka(), lozinkaDTO.getStaraLozinka())) {
+			httpHeader.set("message", "Niste uneli ispravnu lozinku koju zelite da menjate");
+			return new ResponseEntity<Boolean>(false, httpHeader, HttpStatus.OK);
+		}
+		
+		if(!Arrays.equals(lozinkaDTO.getNovaLozinka(),lozinkaDTO.getPotvrdaLozinke())) {
+			httpHeader.set("message", "Niste ispravno potvrdili vasu novu lozinku");
+			return new ResponseEntity<Boolean>(false, httpHeader, HttpStatus.OK);
+		}
+		
+		logovanKorisnik.setLozinka(lozinkaDTO.getNovaLozinka());
+		
+		try {
+			logovanKorisnik = korisnikService.addKorisnik(logovanKorisnik);
 		}catch(Exception e){
 			httpHeader.set("message", "Greska kod izmene podataka");
 			return new ResponseEntity<Boolean>(false, httpHeader, HttpStatus.OK);		
