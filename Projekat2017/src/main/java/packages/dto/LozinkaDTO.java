@@ -8,7 +8,7 @@ public class LozinkaDTO {
 	@NotNull(message = "Morate uneti prethodnu lozinku")
 	@Size(min = 8, max = 30, message = "Uneli ste nedozvoljen broj karaktera za prethodnu lozinku")
 	private char[] staraLozinka;
-	
+
 	@NotNull(message = "Morate uneti novu lozinku")
 	@Size(min = 8, max = 30, message = "Uneli ste nedozvoljen broj karaktera za novu lozinku")
 	private char[] novaLozinka;

@@ -38,7 +38,7 @@ import packages.services.RegistrovaniKorisnikService;
 @RestController
 @RequestMapping(value = "app/secured/")
 public class RegKorisnikController {
-
+	
 	@Autowired
 	private KorisnikService korisnikService; 
 	
