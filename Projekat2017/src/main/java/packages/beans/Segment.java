@@ -60,5 +60,9 @@ public class Segment implements Serializable{
 	public void setTip(TipSegmenta tip) {
 		this.tip = tip;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "Segment [id=" + id + ", sala=" + sala + ", tip=" + tip + "]";
+	}
 }
