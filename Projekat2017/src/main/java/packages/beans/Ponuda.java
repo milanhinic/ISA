@@ -34,6 +34,12 @@ public class Ponuda implements Serializable{
 		this.oglas = oglas;
 		this.iznos = iznos;
 	}
+	
+	public Ponuda(Oglas oglas, Double iznos) {
+		super();
+		this.oglas = oglas;
+		this.iznos = iznos;
+	}
 
 	public Long getId() {
 		return id;

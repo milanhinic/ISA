@@ -2,6 +2,7 @@ package packages.services;
 
 import java.util.ArrayList;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import packages.beans.Oglas;
@@ -12,6 +13,7 @@ import packages.serviceInterfaces.PonudaInterface;
 @Service
 public class PonudaService implements PonudaInterface{
 
+	@Autowired
 	private PonudaRepository pr;
 	
 	

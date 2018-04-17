@@ -1,5 +1,7 @@
 package packages.controllers;
 
+import java.util.Arrays;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import packages.beans.CustomUserDetailsFactory;
 import packages.beans.Korisnik;
+import packages.enumerations.KorisnikTip;
 import packages.enumerations.RegKorisnikStatus;
 import packages.security.TokenUtils;
 import packages.services.KorisnikService;
@@ -36,7 +39,7 @@ public class LoginController {
 		String token = null;
 		HttpHeaders httpHeader = new HttpHeaders();
 		httpHeader.add("message", "Uspesno logovanje!");
-		
+		char[] lozinka = {'l', 'o' ,'z', 'i', 'n', 'k', 'a', 'a' };		
 		if(korisnik==null) {
 			httpHeader.set("message", "Neispravno uneseni email ili lozinka.");
 			return new ResponseEntity<String>(token,httpHeader,HttpStatus.OK);
@@ -44,6 +47,10 @@ public class LoginController {
 			if(korisnik.getStatus().equals(RegKorisnikStatus.N)) {
 				httpHeader.set("message", "Vas nalog nije aktiviran.");
 				return new ResponseEntity<String>(token,httpHeader,HttpStatus.OK);			
+			}else if(korisnik.getTip().equals(KorisnikTip.AF) && Arrays.equals(korisnik.getLozinka(), lozinka)) {
+				token = tokenUtils.generateToken(CustomUserDetailsFactory.createCustomUserDetails(korisnik));
+				httpHeader.set("message", "Promeni");
+				return new ResponseEntity<String>(token, httpHeader,HttpStatus.OK);
 			}
 			
 			token = tokenUtils.generateToken(CustomUserDetailsFactory.createCustomUserDetails(korisnik));

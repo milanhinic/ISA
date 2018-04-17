@@ -1,5 +1,7 @@
 package packages.controllers;
 
+import java.util.ArrayList;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,16 +51,18 @@ public class PonudaController {
 		
 		
 		Oglas oglas =  oc.getOglasById(new Long(oglasId));
-
+		Ponuda novaNovaPonuda = new Ponuda(oglas, novaPonuda.getIznos());
 		
 		if(oglas == null) {
 			httpHeader.add("message", "Neuspesno kreiranje nove ponude,nepostojeci oglas.");
 			return new ResponseEntity<Ponuda>(null, httpHeader, HttpStatus.OK);
 		}
 		
-		novaPonuda.setOglasa(oglas);
+		//novaPonuda.setOglasa(oglas);
+		novaNovaPonuda.setOglasa(oglas);
 		
-		Ponuda retVal = pc.addPonuda(novaPonuda);
+		//Ponuda retVal = pc.addPonuda(novaPonuda);
+		Ponuda retVal = pc.addPonuda(novaNovaPonuda);
 		if(retVal != null) {
 			httpHeader.add("message", "Uspesno kreirana nove ponuda.");
 			return new ResponseEntity<Ponuda>(retVal, httpHeader, HttpStatus.OK);
@@ -68,5 +72,16 @@ public class PonudaController {
 		return new ResponseEntity<Ponuda>(null, httpHeader, HttpStatus.OK);
 	}
 	
+	
+	@RequestMapping(value = "vratiPonude/{idOglasa}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public ResponseEntity<ArrayList<Ponuda>> vratiPonude(@PathVariable int idOglasa){
+		
+		Oglas oglas =  oc.getOglasById(new Long(idOglasa));
+		
+		ArrayList<Ponuda> sale = pc.getPonudeByOglas(oglas);
+		
+		return new ResponseEntity<ArrayList<Ponuda>>(sale, HttpStatus.OK);
+	}
 	
 }
