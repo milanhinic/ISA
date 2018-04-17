@@ -51,7 +51,7 @@ public class RegKorisnikController {
 	@Autowired
 	private RegistrovaniKorisnikService regKorisnikService;
 	
-	@PreAuthorize("hasAuthority('RK')")
+	@PreAuthorize("hasAuthority('RK') or hasAuthority('AU') or hasAuthority('AF')")
 	@RequestMapping(value = "vratiRegKorisnika", method = RequestMethod.GET)
 	public ResponseEntity<KorisnikDTO> vratiRegKorisnika(ServletRequest request){
 		
@@ -75,7 +75,7 @@ public class RegKorisnikController {
 		return new ResponseEntity<KorisnikDTO>(korisnikDTO, HttpStatus.OK);
 	}
 	
-	@PreAuthorize("hasAuthority('RK') or hasAuthority('AU')")
+	@PreAuthorize("hasAuthority('RK') or hasAuthority('AU') or hasAuthority('AF')")
 	@RequestMapping(value = "izmena", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Boolean> izmeniKorisnika(@RequestBody @Valid KorisnikDTO korisnik, BindingResult result){
 		
@@ -112,7 +112,7 @@ public class RegKorisnikController {
 		return new ResponseEntity<Boolean>(true,httpHeader, HttpStatus.OK);
 	}
 	
-	@PreAuthorize("hasAuthority('RK') or hasAuthority('AU')")
+	@PreAuthorize("hasAuthority('RK') or hasAuthority('AU') or hasAuthority('AF')")
 	@RequestMapping(value = "izmenaLozinke", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Boolean> izmeniLozinku(@RequestBody @Valid LozinkaDTO lozinkaDTO, BindingResult result, ServletRequest request){
 		
