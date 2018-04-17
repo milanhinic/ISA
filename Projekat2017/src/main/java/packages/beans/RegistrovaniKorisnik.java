@@ -71,6 +71,9 @@ public class RegistrovaniKorisnik implements Serializable{
 	public void setPrijatelji(Set<RegistrovaniKorisnik> prijatelji) {
 		this.prijatelji = prijatelji;
 	}
-	
-	
+
+	@Override
+	public String toString() {
+		return "RegistrovaniKorisnik [id=" + id + ", reg_korisnik_id=" + reg_korisnik_id + ", br_bodova=" + br_bodova+"]";
+	}
 }
