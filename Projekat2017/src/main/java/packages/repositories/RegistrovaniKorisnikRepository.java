@@ -26,10 +26,7 @@ public interface RegistrovaniKorisnikRepository extends JpaRepository<Registrova
 	@Query("select k from RegistrovaniKorisnik reg INNER JOIN reg.prijatelji prijatelji INNER JOIN prijatelji.reg_korisnik_id k where reg.reg_korisnik_id = ?1 and (UPPER(CONCAT(k.ime, ' ', k.prezime)) LIKE UPPER(?2) or UPPER(CONCAT(k.prezime, ' ', k.ime)) LIKE UPPER(?2)) order by k.ime, k.prezime asc")
 	public Page<Korisnik> getPrijateljiByNameAndSurname(Korisnik korisnik, String imeprezime, Pageable pageable);
 	
-<<<<<<< HEAD
-=======
 	@Query("select count(k) from RegistrovaniKorisnik reg INNER JOIN reg.prijatelji prijatelji INNER JOIN prijatelji.reg_korisnik_id k where reg.reg_korisnik_id = ?1 and (UPPER(CONCAT(k.ime, ' ', k.prezime)) LIKE UPPER(?2) or UPPER(CONCAT(k.prezime, ' ', k.ime)) LIKE UPPER(?2))")
 	public Long countPrijateljiByNameAndSurname(Korisnik korisnik, String imeprezime);
 
->>>>>>> branch 'master' of https://github.com/milanhinic/ISA
 }

@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Ponuda implements Serializable{
@@ -15,12 +16,10 @@ public class Ponuda implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
+
 	
-	@Column(nullable = false)
-	private Long idRegKor;
-	
-	@Column(nullable = false)
-	private Long idOglasa;
+	@ManyToOne(optional = false)
+	private Oglas oglas;
 	
 	@Column(nullable = false)
 	private Double iznos;
@@ -29,11 +28,10 @@ public class Ponuda implements Serializable{
 		
 	}
 
-	public Ponuda(Long id, Long idRegKor, Long idOglasa, Double iznos) {
+	public Ponuda(Long id, Oglas oglas, Double iznos) {
 		super();
 		this.id = id;
-		this.idRegKor = idRegKor;
-		this.idOglasa = idOglasa;
+		this.oglas = oglas;
 		this.iznos = iznos;
 	}
 
@@ -45,20 +43,13 @@ public class Ponuda implements Serializable{
 		this.id = id;
 	}
 
-	public Long getIdRegKor() {
-		return idRegKor;
+
+	public Oglas getOglasa() {
+		return oglas;
 	}
 
-	public void setIdRegKor(Long idRegKor) {
-		this.idRegKor = idRegKor;
-	}
-
-	public Long getIdOglasa() {
-		return idOglasa;
-	}
-
-	public void setIdOglasa(Long idOglasa) {
-		this.idOglasa = idOglasa;
+	public void setOglasa(Oglas idOglasa) {
+		this.oglas = oglas;
 	}
 
 	public Double getIznos() {
@@ -71,7 +62,7 @@ public class Ponuda implements Serializable{
 
 	@Override
 	public String toString() {
-		return "Ponuda [id=" + id + ", idRegKor=" + idRegKor + ", idOglasa=" + idOglasa + ", iznos=" + iznos + "]";
+		return "Ponuda [id=" + id + ", oglas=" + oglas + ", iznos=" + iznos + "]";
 	}
 	
 	

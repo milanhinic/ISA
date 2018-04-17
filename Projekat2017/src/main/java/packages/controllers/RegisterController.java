@@ -105,13 +105,7 @@ public class RegisterController {
 			httpHeader.set("message", "Greska kod unosa podataka");
 			return new ResponseEntity<Boolean>(false, httpHeader, HttpStatus.OK);		
 		}
-		/*
-		try {
-			emailService.sendConfirmationMail(korisnik);
-		} catch (MessagingException e) {
-			System.out.println("Neuspesno poslat mail");
-		}
-		*/
+
 		return new ResponseEntity<Boolean>(true,httpHeader, HttpStatus.OK);
 	}
 	

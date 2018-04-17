@@ -31,24 +31,30 @@ public class Oglas implements Serializable{
 	@Column(nullable = false)
 	private String aktivnoDo;
 	
-	@Lob
 	@Column(nullable = false)
+	@Lob
 	private byte[] path;
 	
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private OglasStatus status;
-	
-	@OneToMany
-	private Set<Ponuda> datePonude;
 
 	public Oglas() {
 		
 	}
 
-	public Oglas(Long id, String naziv, String opis, String aktivnoDo, String path, OglasStatus status) {
+	public Oglas(Long id, String naziv, String opis, String aktivnoDo, byte[] path, OglasStatus status) {
 		super();
 		this.id = id;
+		this.naziv = naziv;
+		this.opis = opis;
+		this.aktivnoDo = aktivnoDo;
+		this.path = path;
+		this.status = status;
+	}
+	
+	public Oglas(String naziv, String opis, String aktivnoDo, byte[] path, OglasStatus status) {
+		super();
 		this.naziv = naziv;
 		this.opis = opis;
 		this.aktivnoDo = aktivnoDo;
@@ -88,11 +94,11 @@ public class Oglas implements Serializable{
 		this.aktivnoDo = aktivnoDo;
 	}
 
-	public String getPath() {
+	public byte[] getPath() {
 		return path;
 	}
 
-	public void setPath(String path) {
+	public void setPath(byte[] path) {
 		this.path = path;
 	}
 
@@ -104,18 +110,11 @@ public class Oglas implements Serializable{
 		this.status = status;
 	}
 
-	public Set<Ponuda> getDatePonude() {
-		return datePonude;
-	}
-
-	public void setDatePonude(Set<Ponuda> datePonude) {
-		this.datePonude = datePonude;
-	}
 
 	@Override
 	public String toString() {
 		return "Oglas [id=" + id + ", naziv=" + naziv + ", opis=" + opis + ", aktivnoDo=" + aktivnoDo + ", path=" + path
-				+ ", status=" + status + ", datePonude=" + datePonude + "]";
+				+ ", status=" + status + "]";
 	}
 	
 	

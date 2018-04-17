@@ -752,26 +752,7 @@ public class RegKorisnikController {
 		}else if(page<=0) {
 			return null;
 		}
-		/*
-		int poslednja = (int)Math.ceil(prijateljiCount/10)+1;
 		
-		Page<RegistrovaniKorisnik> prijatelji = null;
-		
-		if(page>poslednja) {
-			prijatelji = regKorisnikService.getPrijatelji(logovanKorisnik, new PageRequest(poslednja-1,10));
-		}else {
-			prijatelji = regKorisnikService.getPrijatelji(logovanKorisnik, new PageRequest(page-1,10));
-		}
-		
-		ArrayList<KorisnikDTO> retVal = new ArrayList<KorisnikDTO>();
-		
-		for(RegistrovaniKorisnik regKor : prijatelji.getContent()) {
-			Korisnik k = regKor.getReg_korisnik_id();
-			KorisnikDTO kDTO = toKorisnikDTO.convert(k);
-			retVal.add(kDTO);
-		}
-			
-		*/
 	
 		return retVal;
 	}
