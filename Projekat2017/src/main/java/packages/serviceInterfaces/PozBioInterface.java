@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import packages.beans.PozBio;
+import packages.beans.PredFilm;
 import packages.enumerations.PozBioTip;
 
 public interface PozBioInterface {
@@ -23,6 +24,8 @@ public interface PozBioInterface {
 	public Page<PozBio> getPozBioListNaziv(PozBioTip tip, String naziv, Pageable pageable);
 	
 	public Long getPozBioCountNaziv(PozBioTip tip, String naziv);
+	
+	public Double getAmbientScore(PozBio pozBio);
 	
 
 }

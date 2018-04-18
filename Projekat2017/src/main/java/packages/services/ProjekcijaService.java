@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import packages.beans.PozBio;
@@ -54,5 +56,18 @@ public class ProjekcijaService implements ProjekcijaInterface{
 		// TODO Auto-generated method stub
 		return pr.projekcijasBetween(pozBio, pocetak, kraj);
 	}
+
+	@Override
+	public Page<Projekcija> getProjekcijasByPredFilmPage(PredFilm predFilm, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return pr.findByPredFilm(predFilm, pageable);
+	}
+
+	@Override
+	public Long countByPredFilm(PredFilm predFilm) {
+		// TODO Auto-generated method stub
+		return pr.countByPredFilm(predFilm);
+	}
+	
 
 }

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import packages.beans.PozBio;
+import packages.beans.PredFilm;
 import packages.enumerations.PozBioTip;
 import packages.services.PozBioService;
 
@@ -211,6 +212,29 @@ public class PozBioController {
 		
 		httpHeader.add("message", "Neuspesno dodavanje novog pozorista/bioskopa.");
 		return new ResponseEntity<PozBio>(null,httpHeader, HttpStatus.OK);
+	}
+	
+	
+	@RequestMapping(value="ocenaAmbijenta/{idPozBio}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Double> ocenaAmbijenta(@PathVariable int idPozBio){
+		HttpHeaders httpHeader = new HttpHeaders();
+		
+		PozBio pozBio = pbs.getPozBio(new Long(idPozBio));
+		
+		if(pozBio == null) {
+			httpHeader.add("message", "Nepostojecie pozoriste/bioskop!");
+			return new ResponseEntity<>(null, httpHeader, HttpStatus.OK);
+		}
+		
+		Double ocenaAmbijenta;
+		
+		try {
+			ocenaAmbijenta = pbs.getAmbientScore(pozBio);
+		}catch(NullPointerException e) {
+			ocenaAmbijenta = new Double(0.0);
+		}
+		
+		return new ResponseEntity<Double>(ocenaAmbijenta, HttpStatus.OK);
 	}
 
 }

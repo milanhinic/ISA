@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import packages.beans.PredFilm;
 import packages.enumerations.PredFilmTip;
 import packages.repositories.PredFilmRepository;
+import packages.repositories.RezervacijaRepository;
 import packages.serviceInterfaces.PredFilmInterface;
 
 @Service
@@ -17,6 +18,9 @@ public class PredFilmService implements PredFilmInterface{
 
 	@Autowired
 	private PredFilmRepository pfr;
+	
+	@Autowired
+	RezervacijaRepository rr;
 	
 	@Override
 	public PredFilm getPredFilm(Long id) {
@@ -54,4 +58,12 @@ public class PredFilmService implements PredFilmInterface{
 		return pfr.findByTip(tip);
 	}
 
+	@Override
+	public Double getProjectionScore(PredFilm predFilm) {
+		// TODO Auto-generated method stub
+		Long ukupno = rr.getProjectionScores(predFilm);
+		Long count = rr.countProjectionScores(predFilm);
+	
+		return (double)ukupno/count;
+	}
 }
