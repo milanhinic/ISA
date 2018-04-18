@@ -1,10 +1,8 @@
 package packages.controllers;
 
 import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import packages.beans.Karta;
@@ -237,5 +236,121 @@ public class RezervacijaController {
 		return retVal;
 	}
 	
+	@PreAuthorize("hasAuthority('RK')")
+	@RequestMapping(value = "oceni/{mode}", method = RequestMethod.PUT, produces=MediaType.APPLICATION_JSON_VALUE )
+	public ResponseEntity<Boolean> oceniAmbijentProjekciju(@PathVariable int mode,  @RequestParam int idProjekcije, @RequestParam int ocena, ServletRequest request){
+		
+		HttpHeaders header = new HttpHeaders();
+		
+		if(ocena < 1 || ocena > 5) {
+			header.add("message", "Ocena mora biti na skali od 1 do 5.");
+			return new ResponseEntity<Boolean>(false, header, HttpStatus.OK);
+		}
+		
+		HttpServletRequest httpRequest = (HttpServletRequest) request;
+		String token = httpRequest.getHeader("token");
+		
+		if(token == null) {
+			return null;
+		}
+		
+		String email = tokenUtils.getUsernameFromToken(token);
+
+		Korisnik korisnik = korisnikService.getKorisnikByEmail(email);
+		
+		if(korisnik==null) {
+			header.add("message", "Nepostojeci korisnik, greska.");
+			return new ResponseEntity<Boolean>(false, header, HttpStatus.OK);
+		}
+		
+		RegistrovaniKorisnik logregKorisnik = regKorisnikService.getRegKorisnikByKorisnikId(korisnik);
+		
+		Rezervacija rezervacija = rezervacijaService.findById(new Long(idProjekcije));
+		
+		if(rezervacija == null) {
+			header.add("message", "Nepostojeca rezervacija, pokusajte ponovo.");
+			return new ResponseEntity<Boolean>(false, header, HttpStatus.OK);
+		}
+		
+		if(!rezervacija.getRegKorisnik().getId().equals(logregKorisnik.getId())) {
+			header.add("message", "Pokusavate da ocenite tudju rezervaciju!.");
+			return new ResponseEntity<Boolean>(false, header, HttpStatus.OK);
+		}
+		
+		//ambijent
+		if(mode == 0) {
+			if(rezervacija.getOcenaAmbijenta() != null) {
+				header.add("message", "Vec ste ocenili ambijent za ovu rezervaciju.");
+				return new ResponseEntity<Boolean>(false, header, HttpStatus.OK);
+			}
+			rezervacija.setOcenaAmbijenta(new Integer(ocena));
+			rezervacijaService.createRezervacija(rezervacija);
+		//projekcija	
+		}else if(mode == 1) {
+			if(rezervacija.getOcenaProjekcije() != null) {
+				header.add("message", "Vec ste ocenili projekciju vezanu za ovu rezervaciju.");
+				return new ResponseEntity<Boolean>(false, header, HttpStatus.OK);
+			}
+			rezervacija.setOcenaProjekcije(new Integer(ocena));
+			rezervacijaService.createRezervacija(rezervacija);
+		}else {
+			header.add("message", "Nepostojeci tip ocene.");
+			return new ResponseEntity<Boolean>(false, header, HttpStatus.OK);
+		}
+		
+		return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+	}
+	
+	@PreAuthorize("hasAuthority('RK')")
+	@RequestMapping(value = "izbrisiOcenu/{mode}", method = RequestMethod.PUT, produces=MediaType.APPLICATION_JSON_VALUE )
+	public ResponseEntity<Boolean> izbrisiOcenu(@PathVariable int mode,  @RequestParam int idProjekcije, ServletRequest request){
+		
+		HttpHeaders header = new HttpHeaders();
+		
+		HttpServletRequest httpRequest = (HttpServletRequest) request;
+		String token = httpRequest.getHeader("token");
+		
+		if(token == null) {
+			return null;
+		}
+		
+		String email = tokenUtils.getUsernameFromToken(token);
+
+		Korisnik korisnik = korisnikService.getKorisnikByEmail(email);
+		
+		if(korisnik==null) {
+			header.add("message", "Nepostojeci korisnik, greska.");
+			return new ResponseEntity<Boolean>(false, header, HttpStatus.OK);
+		}
+		
+		RegistrovaniKorisnik logregKorisnik = regKorisnikService.getRegKorisnikByKorisnikId(korisnik);
+		
+		Rezervacija rezervacija = rezervacijaService.findById(new Long(idProjekcije));
+		
+		if(rezervacija == null) {
+			header.add("message", "Nepostojeca rezervacija, pokusajte ponovo.");
+			return new ResponseEntity<Boolean>(false, header, HttpStatus.OK);
+		}
+		
+		if(!rezervacija.getRegKorisnik().getId().equals(logregKorisnik.getId())) {
+			header.add("message", "Pokusavate da izbrisete ocenu za tudju rezervaciju!.");
+			return new ResponseEntity<Boolean>(false, header, HttpStatus.OK);
+		}
+		
+		//ambijent
+		if(mode == 0) {
+			rezervacija.setOcenaAmbijenta(null);
+			rezervacijaService.createRezervacija(rezervacija);
+		//projekcija	
+		}else if(mode == 1) {
+			rezervacija.setOcenaProjekcije(null);
+			rezervacijaService.createRezervacija(rezervacija);
+		}else {
+			header.add("message", "Nepostojeci tip ocene.");
+			return new ResponseEntity<Boolean>(false, header, HttpStatus.OK);
+		}
+		
+		return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+	}
 	
 }

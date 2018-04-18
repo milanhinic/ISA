@@ -125,5 +125,29 @@ public class PredFilmController {
 
 	}
 	
+	@RequestMapping(value = "ocenaProjekcije/{idPredFilm}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Double> izracunajProsecnuOcenu(@PathVariable int idPredFilm){
+		
+		HttpHeaders httpHeader = new HttpHeaders();
+		
+		PredFilm predFilm = pfs.getPredFilm(new Long(idPredFilm));
+		
+		if(predFilm == null) {
+			httpHeader.add("message", "Nepostojecii film/predstava!");
+			return new ResponseEntity<>(null, httpHeader, HttpStatus.OK);
+		}
+		
+		Double ocenaProjekcije;
+		
+		try {
+			ocenaProjekcije = pfs.getProjectionScore(predFilm);
+		}catch(NullPointerException e) {
+			ocenaProjekcije = new Double(0.0);
+		}
+		
+		return new ResponseEntity<Double>(ocenaProjekcije, HttpStatus.OK);
+
+	}
+	
 
 }

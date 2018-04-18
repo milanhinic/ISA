@@ -21,5 +21,7 @@ public interface PredFilmInterface {
 	public Long getRowCount(PredFilmTip tip);
 	
 	public ArrayList<PredFilm> getAllPredFilmsByTip(PredFilmTip tip);
+	
+	public Double getProjectionScore(PredFilm predFilm);
 
 }

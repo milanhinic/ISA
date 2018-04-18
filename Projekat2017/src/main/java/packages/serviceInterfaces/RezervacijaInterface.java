@@ -1,12 +1,10 @@
 package packages.serviceInterfaces;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import packages.beans.PozBio;
+import packages.beans.PredFilm;
 import packages.beans.RegistrovaniKorisnik;
 import packages.beans.Rezervacija;
 
@@ -27,4 +25,6 @@ public interface RezervacijaInterface {
 	public Long countByRegKorisnikAndCanCancel(RegistrovaniKorisnik registrovaniKorisnik);
 	
 	public Rezervacija findOneByKorisnikAndCanCancel(RegistrovaniKorisnik registrovaniKorisnik, Long id);
+	
+	
 }

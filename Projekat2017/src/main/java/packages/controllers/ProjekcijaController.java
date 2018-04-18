@@ -9,10 +9,13 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,6 +25,7 @@ import packages.beans.PozBio;
 import packages.beans.PredFilm;
 import packages.beans.Projekcija;
 import packages.beans.Sala;
+import packages.enumerations.PozBioTip;
 import packages.services.PozBioService;
 import packages.services.PredFilmService;
 import packages.services.ProjekcijaService;
@@ -178,4 +182,40 @@ public class ProjekcijaController {
 		return new ResponseEntity<ArrayList<Projekcija>>(retVal, HttpStatus.OK);
 	}
 	
+	@RequestMapping(value = "vratiProjekcijePredFilm/{idPredFilm}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE )
+	public ResponseEntity<Page<Projekcija>> vratiProjekcijePredFilm(@PathVariable int idPredFilm, @RequestParam int stranica){
+	
+		HttpHeaders header = new HttpHeaders();
+		
+		PredFilm predFilm = pfs.getPredFilm(new Long(idPredFilm));
+		
+		if(predFilm == null) {
+			header.add("message", "Nepostojeci film ili predstava!");
+			new ResponseEntity<>(null, header, HttpStatus.OK);
+		}
+		
+		Long projekcijeCount = ps.countByPredFilm(predFilm);
+		
+		if(projekcijeCount <= 0) {
+			header.add("message", "Za ovaj entitet nema projekcija.");
+			new ResponseEntity<>(null, header, HttpStatus.OK);
+		}
+		
+		if(stranica <= 0) {
+			header.add("message", "Neispravno navedena stranica.");
+			new ResponseEntity<>(null, header, HttpStatus.OK);
+		}
+		
+		int poslednja = (int)Math.ceil(projekcijeCount/10)+1;
+		
+		Page<Projekcija> retVal = null;
+		
+		if(stranica > poslednja) {
+			retVal = ps.getProjekcijasByPredFilmPage(predFilm, new PageRequest(poslednja-1, 10));
+		}else {
+			retVal = ps.getProjekcijasByPredFilmPage(predFilm, new PageRequest(stranica-1, 10));
+		}
+		
+		return new ResponseEntity<Page<Projekcija>>(retVal, HttpStatus.OK);
+	}
 }
