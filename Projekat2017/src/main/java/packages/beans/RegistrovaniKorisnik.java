@@ -73,19 +73,11 @@ public class RegistrovaniKorisnik implements Serializable{
 		this.prijatelji = prijatelji;
 	}
 
-	
-	public Set<Oglas> getLicniOglasi() {
-		return licniOglasi;
-	}
-
-	public void setLicniOglasi(Set<Oglas> licniOglasi) {
-		this.licniOglasi = licniOglasi;
-	}
 
 	@Override
 	public String toString() {
 		return "RegistrovaniKorisnik [id=" + id + ", reg_korisnik_id=" + reg_korisnik_id + ", br_bodova=" + br_bodova
-				+ ", prijatelji=" + prijatelji + ", licniOglasi=" + licniOglasi + "]";
+				+ ", prijatelji=" + prijatelji + ", licniOglasi="  + "]";
 	}
 
 }
