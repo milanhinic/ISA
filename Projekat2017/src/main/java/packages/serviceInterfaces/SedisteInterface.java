@@ -17,5 +17,7 @@ public interface SedisteInterface {
 	public ArrayList<Sediste> getSedistaBySegment(Segment segment);
 	
 	public int getBrojSedistaBySegment(Segment segment);
+	
+	public void deleteSediste(Long id);
 
 }

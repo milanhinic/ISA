@@ -52,7 +52,6 @@ public class Oglas implements Serializable{
 		this.naziv = naziv;
 		this.opis = opis;
 		this.aktivnoDo = aktivnoDo;
-		this.path = path;
 		this.status = status;
 	}
 	
@@ -97,6 +96,7 @@ public class Oglas implements Serializable{
 		this.aktivnoDo = aktivnoDo;
 	}
 
+
 	public byte[] getPath() {
 		return path;
 	}
@@ -112,7 +112,6 @@ public class Oglas implements Serializable{
 	public void setStatus(OglasStatus status) {
 		this.status = status;
 	}
-
 	
 
 	@Override

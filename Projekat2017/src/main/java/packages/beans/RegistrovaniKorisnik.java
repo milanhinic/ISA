@@ -73,8 +73,7 @@ public class RegistrovaniKorisnik implements Serializable{
 
 	@Override
 	public String toString() {
-		return "RegistrovaniKorisnik [id=" + id + ", reg_korisnik_id=" + reg_korisnik_id + ", br_bodova=" + br_bodova
-				+ ", prijatelji=" + prijatelji + ", licniOglasi="  + "]";
+		return "RegistrovaniKorisnik [id=" + id + ", reg_korisnik_id=" + reg_korisnik_id + ", br_bodova=" + br_bodova+"]";
 	}
 
 }

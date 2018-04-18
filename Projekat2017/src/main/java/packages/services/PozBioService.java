@@ -6,11 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
 import packages.beans.PozBio;
 import packages.enumerations.PozBioTip;
 import packages.repositories.PozBioRepository;
+import packages.repositories.RezervacijaRepository;
 import packages.serviceInterfaces.PozBioInterface;
 
 @Service
@@ -18,6 +18,9 @@ public class PozBioService implements PozBioInterface {
 
 	@Autowired
 	PozBioRepository pbr;
+	
+	@Autowired
+	RezervacijaRepository rr;
 	
 	
 	@Override
@@ -62,6 +65,14 @@ public class PozBioService implements PozBioInterface {
 		return pbr.countByTipAndNazivLikeIgnoreCase(tip, "%"+naziv.trim()+"%");
 	}
 
+	@Override
+	public Double getAmbientScore(PozBio pozBio) {
+		// TODO Auto-generated method stub
+		Long ukupno = rr.getAmbientScores(pozBio);
+		Long count = rr.countAmbientScores(pozBio);
+		
+		return (double)ukupno/count;
+	}
 	
 
 }

@@ -1,5 +1,7 @@
 package packages.controllers;
 
+import java.util.ArrayList;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,5 +105,49 @@ public class PredFilmController {
 		return new ResponseEntity<>(null,httpHeader, HttpStatus.OK);
 
 	}
+	
+	@RequestMapping(value = "vratiSvePredFilmove/{tip}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ArrayList<PredFilm>> vratiSvePredFilmove(@PathVariable int tip){
+		
+		HttpHeaders httpHeader = new HttpHeaders();
+		ArrayList<PredFilm> retVal = new ArrayList<PredFilm>();
+		
+		if(tip == 0) {
+			retVal = pfs.getAllPredFilmsByTip(PredFilmTip.FILM);
+		}else if(tip == 1) {
+			retVal = pfs.getAllPredFilmsByTip(PredFilmTip.PRED);
+		}else {
+			httpHeader.add("message", "Nedozvoljen tip predstave/filma!");
+			return new ResponseEntity<>(null, httpHeader, HttpStatus.OK);
+		}
+		
+		return new ResponseEntity<ArrayList<PredFilm>>(retVal, HttpStatus.OK);
+
+	}
+	
+	@RequestMapping(value = "ocenaProjekcije/{idPredFilm}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Double> izracunajProsecnuOcenu(@PathVariable int idPredFilm){
+		
+		HttpHeaders httpHeader = new HttpHeaders();
+		
+		PredFilm predFilm = pfs.getPredFilm(new Long(idPredFilm));
+		
+		if(predFilm == null) {
+			httpHeader.add("message", "Nepostojecii film/predstava!");
+			return new ResponseEntity<>(null, httpHeader, HttpStatus.OK);
+		}
+		
+		Double ocenaProjekcije;
+		
+		try {
+			ocenaProjekcije = pfs.getProjectionScore(predFilm);
+		}catch(NullPointerException e) {
+			ocenaProjekcije = new Double(0.0);
+		}
+		
+		return new ResponseEntity<Double>(ocenaProjekcije, HttpStatus.OK);
+
+	}
+	
 
 }

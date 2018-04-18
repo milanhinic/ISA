@@ -1,4 +1,6 @@
 package packages.dto;
+
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -48,6 +50,5 @@ public class LozinkaDTO {
 	public void setPotvrdaLozinke(char[] potvrdaLozinke) {
 		this.potvrdaLozinke = potvrdaLozinke;
 	}
-	
-	
 }
+

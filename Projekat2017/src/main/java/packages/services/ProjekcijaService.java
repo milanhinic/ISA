@@ -1,11 +1,17 @@
 package packages.services;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import packages.beans.PozBio;
+import packages.beans.PredFilm;
 import packages.beans.Projekcija;
+import packages.beans.Sala;
 import packages.repositories.ProjekcijaRepository;
 import packages.serviceInterfaces.ProjekcijaInterface;
 
@@ -13,36 +19,55 @@ import packages.serviceInterfaces.ProjekcijaInterface;
 public class ProjekcijaService implements ProjekcijaInterface{
 
 	@Autowired
-	private ProjekcijaRepository projekcijaRepository;
+	private ProjekcijaRepository pr;
 	
-	
-	
+	@Override
+	public Projekcija getProjekcija(Long id) {
+		// TODO Auto-generated method stub
+		return pr.findOne(id);
+	}
+
 	@Override
 	public Projekcija addProjekcija(Projekcija projekcija) {
-		return projekcijaRepository.save(projekcija);
-	}
-
-	@Override
-	public ArrayList<Projekcija> getAllProjekcija() {
-		return (ArrayList<Projekcija>)projekcijaRepository.findAll();
-	}
-
-	@Override
-	public ArrayList<Projekcija> getProjekcijaBySala(String salaName) {
 		// TODO Auto-generated method stub
-		return null;
+		return pr.save(projekcija);
 	}
 
 	@Override
-	public Projekcija getProjekcijaByFilmPre(int id) {
+	public ArrayList<Projekcija> getAllProjekcijas() {
 		// TODO Auto-generated method stub
-		return null;
+		return (ArrayList<Projekcija>) pr.findAll();
 	}
 
 	@Override
-	public ArrayList<Projekcija> getProjekcijaByVreme(String vreme) {
+	public ArrayList<Projekcija> getProjekcijasByPredFilm(PredFilm predFilm) {
 		// TODO Auto-generated method stub
-		return null;
+		return pr.findByPredFilm(predFilm);
 	}
+
+	@Override
+	public ArrayList<Projekcija> getProjekcijasBySala(Sala sala) {
+		// TODO Auto-generated method stub
+		return pr.findBySala(sala);
+	}
+
+	@Override
+	public ArrayList<Projekcija> getProjekcijasBetween(PozBio pozBio, Date pocetak, Date kraj) {
+		// TODO Auto-generated method stub
+		return pr.projekcijasBetween(pozBio, pocetak, kraj);
+	}
+
+	@Override
+	public Page<Projekcija> getProjekcijasByPredFilmPage(PredFilm predFilm, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return pr.findByPredFilm(predFilm, pageable);
+	}
+
+	@Override
+	public Long countByPredFilm(PredFilm predFilm) {
+		// TODO Auto-generated method stub
+		return pr.countByPredFilm(predFilm);
+	}
+	
 
 }

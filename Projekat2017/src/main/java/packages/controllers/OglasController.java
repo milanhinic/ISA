@@ -5,6 +5,8 @@ import javax.servlet.ServletRequest;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.websocket.server.PathParam;
+
+import org.eclipse.jetty.http.HttpHeader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,7 +48,7 @@ public class OglasController {
 	public ResponseEntity<Oglas> dodajOglas(@RequestParam("putanja") MultipartFile putanja, @RequestParam("naziv") String naziv, @RequestParam("opis") String opis, @RequestParam("aktivnoDo") String aktivnoDo) throws IOException{
 		
 		HttpHeaders httpHeader = new HttpHeaders();
-		
+
 		if(naziv == null || opis == null || aktivnoDo == null) {
 			httpHeader.add("message", "Neuspesno kreiranje novog oglasa, nevalidan objekat.");
 			return new ResponseEntity<Oglas>(null, httpHeader, HttpStatus.OK);
@@ -74,6 +77,7 @@ public class OglasController {
 		return new ResponseEntity<Oglas>(null,httpHeader, HttpStatus.OK);
 		
 		
+
 	}
 	
 	

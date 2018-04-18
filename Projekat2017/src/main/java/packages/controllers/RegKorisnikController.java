@@ -49,7 +49,7 @@ public class RegKorisnikController {
 	@Autowired
 	private RegistrovaniKorisnikService regKorisnikService;
 	
-	
+
 	@PreAuthorize("hasAuthority('RK') or hasAuthority('AU') or hasAuthority('AF')")
 	@RequestMapping(value = "vratiRegKorisnika", method = RequestMethod.GET)
 	public ResponseEntity<KorisnikDTO> vratiRegKorisnika(ServletRequest request){
