@@ -1,5 +1,7 @@
 package packages.services;
 
+import java.util.ArrayList;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,7 @@ import packages.serviceInterfaces.OglasInterface;
 @Service
 public class OglasService implements OglasInterface{
 
+	@Autowired
 	private OglasRepository oglasRepository;
 	
 	
@@ -22,7 +25,7 @@ public class OglasService implements OglasInterface{
 
 	@Override
 	public Oglas getOglasById(Long id) {
-		return oglasRepository.findById(id);
+		return oglasRepository.findOne(id);
 	}
 	
 
@@ -41,4 +44,15 @@ public class OglasService implements OglasInterface{
 		return oglasRepository.findByStatus(status, page);
 	}
 
+	@Override
+	public Oglas getOglasByNazivAndStatus(String name, OglasStatus status) {
+		return oglasRepository.findByNazivAndStatus(name, status);
+	}
+
+	@Override
+	public ArrayList<Oglas> getAllOglasiByStatus(OglasStatus status) {
+		return oglasRepository.findByStatus(status);
+	}
+
+	
 }

@@ -3,11 +3,9 @@ package packages.controllers;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Set;
-
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -51,6 +49,7 @@ public class RegKorisnikController {
 	@Autowired
 	private RegistrovaniKorisnikService regKorisnikService;
 	
+
 	@PreAuthorize("hasAuthority('RK') or hasAuthority('AU') or hasAuthority('AF')")
 	@RequestMapping(value = "vratiRegKorisnika", method = RequestMethod.GET)
 	public ResponseEntity<KorisnikDTO> vratiRegKorisnika(ServletRequest request){
@@ -807,26 +806,6 @@ public class RegKorisnikController {
 		}else if(page<=0) {
 			return null;
 		}
-		/*
-		int poslednja = (int)Math.ceil(prijateljiCount/10)+1;
-		
-		Page<RegistrovaniKorisnik> prijatelji = null;
-		
-		if(page>poslednja) {
-			prijatelji = regKorisnikService.getPrijatelji(logovanKorisnik, new PageRequest(poslednja-1,10));
-		}else {
-			prijatelji = regKorisnikService.getPrijatelji(logovanKorisnik, new PageRequest(page-1,10));
-		}
-		
-		ArrayList<KorisnikDTO> retVal = new ArrayList<KorisnikDTO>();
-		
-		for(RegistrovaniKorisnik regKor : prijatelji.getContent()) {
-			Korisnik k = regKor.getReg_korisnik_id();
-			KorisnikDTO kDTO = toKorisnikDTO.convert(k);
-			retVal.add(kDTO);
-		}
-			
-		*/
 	
 		return retVal;
 	}

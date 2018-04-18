@@ -1,6 +1,7 @@
 package packages.beans;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -11,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import packages.enumerations.OglasStatus;
@@ -39,19 +41,26 @@ public class Oglas implements Serializable{
 	@Enumerated(EnumType.STRING)
 	private OglasStatus status;
 	
-	@OneToMany
-	private Set<Ponuda> datePonude;
-
+	
 	public Oglas() {
 		
 	}
 
-	public Oglas(Long id, String naziv, String opis, String aktivnoDo, String path, OglasStatus status) {
+	public Oglas(Long id, String naziv, String opis, String aktivnoDo, byte[] path, OglasStatus status) {
 		super();
 		this.id = id;
 		this.naziv = naziv;
 		this.opis = opis;
 		this.aktivnoDo = aktivnoDo;
+		this.status = status;
+	}
+	
+	public Oglas(String naziv, String opis, String aktivnoDo, byte[] path, OglasStatus status) {
+		super();
+		this.naziv = naziv;
+		this.opis = opis;
+		this.aktivnoDo = aktivnoDo;
+		this.path = path;
 		this.status = status;
 	}
 
@@ -87,6 +96,15 @@ public class Oglas implements Serializable{
 		this.aktivnoDo = aktivnoDo;
 	}
 
+
+	public byte[] getPath() {
+		return path;
+	}
+
+	public void setPath(byte[] path) {
+		this.path = path;
+	}
+
 	public OglasStatus getStatus() {
 		return status;
 	}
@@ -94,20 +112,14 @@ public class Oglas implements Serializable{
 	public void setStatus(OglasStatus status) {
 		this.status = status;
 	}
-
-	public Set<Ponuda> getDatePonude() {
-		return datePonude;
-	}
-
-	public void setDatePonude(Set<Ponuda> datePonude) {
-		this.datePonude = datePonude;
-	}
+	
 
 	@Override
 	public String toString() {
-		return "Oglas [id=" + id + ", naziv=" + naziv + ", opis=" + opis + ", aktivnoDo=" + aktivnoDo + ", path=" + path
-				+ ", status=" + status + ", datePonude=" + datePonude + "]";
+		return "Oglas [id=" + id + ", naziv=" + naziv + ", opis=" + opis + ", aktivnoDo=" + aktivnoDo + ", path="
+				+ Arrays.toString(path) + ", status=" + status + "]";
 	}
+
 	
 	
 	

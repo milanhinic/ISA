@@ -23,14 +23,23 @@ import org.springframework.web.bind.annotation.RestController;
 
 import packages.beans.Karta;
 import packages.beans.Korisnik;
+import packages.beans.Projekcija;
 import packages.beans.RegistrovaniKorisnik;
 import packages.beans.Rezervacija;
+import packages.beans.Sala;
+import packages.beans.Sediste;
+import packages.beans.Segment;
 import packages.dto.RezervacijaDTO;
+import packages.dto.SedisteDTO;
+import packages.dto.SegmentDTO;
 import packages.security.TokenUtils;
 import packages.services.KartaService;
 import packages.services.KorisnikService;
+import packages.services.ProjekcijaService;
 import packages.services.RegistrovaniKorisnikService;
 import packages.services.RezervacijaService;
+import packages.services.SedisteService;
+import packages.services.SegmentService;
 
 @RestController
 @RequestMapping(value = "app/secured/")
@@ -51,6 +60,14 @@ public class RezervacijaController {
 	@Autowired
 	private TokenUtils tokenUtils;
 	
+	@Autowired
+	private ProjekcijaService projekcijaService;
+	
+	@Autowired
+	private SegmentService segmentiService;
+	
+	@Autowired
+	private SedisteService sedisteService;
 	
 	@PreAuthorize("hasAuthority('RK')")
 	@RequestMapping(value = "vratiRezervacije/{page}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -235,6 +252,79 @@ public class RezervacijaController {
 		
 		return retVal;
 	}
+	
+	@PreAuthorize("hasAuthority('RK')")
+	@RequestMapping(value="vratiSegmenteProj/{idProj}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ArrayList<Segment>> vratiSegmenteZaProjekciju(@PathVariable int idProj) {
+		
+		HttpHeaders header = new HttpHeaders();
+		
+		if(idProj < 1) {
+			header.add("message", "Nepostojeca projekcija!");
+			return new ResponseEntity<>(null, header, HttpStatus.OK);
+		}
+		
+		Projekcija projekcija = projekcijaService.getProjekcija(new Long(idProj));
+		
+		if(projekcija == null) {
+			header.add("message", "Greska prilikom ucitavanja projekcije");
+			return new ResponseEntity<>(null, header, HttpStatus.OK);
+		}
+		
+		ArrayList<Segment> segmenti = segmentiService.getSegmentsBySala(projekcija.getSala());
+		
+		if(segmenti == null || segmenti.size()==0) {
+			header.add("message", "Greska prilikom ucitavanja segmenata");
+			return new ResponseEntity<>(null, header, HttpStatus.OK);
+		}
+		
+		return new ResponseEntity<ArrayList<Segment>>(segmenti, HttpStatus.OK);
+	}
+	
+	@PreAuthorize("hasAuthority('RK')")
+	@RequestMapping(value="vratiSedistaProj/proj={idProj}&seg={idSeg}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ArrayList<SedisteDTO>> vratiSedistaZaProj(@PathVariable("idProj") int idProj, @PathVariable("idSeg") int idSeg){
+		
+		HttpHeaders header = new HttpHeaders();
+		
+		Segment segment = segmentiService.getSegment(new Long(idSeg));
+		
+		if(segment == null) {
+			header.add("message", "Segmenta nije validan!");
+			return new ResponseEntity<>(null, header, HttpStatus.OK);
+		}
+		
+		Projekcija projekcija = projekcijaService.getProjekcija(new Long(idProj));
+		if(projekcija==null) {
+			header.add("message", "Projekcija nije validna!");
+			return new ResponseEntity<>(null, header, HttpStatus.OK);
+		}
+			
+		ArrayList<Sediste> sedista = sedisteService.getSedistaBySegment(segment);
+		
+		if(sedista==null || sedista.size()==0) {
+			header.add("message", "Nema sedista!");
+			return new ResponseEntity<>(null, header, HttpStatus.OK);	
+		}
+		
+		ArrayList<SedisteDTO> retVal = new ArrayList<SedisteDTO>();
+		
+		for(Sediste s : sedista) {
+			
+			Karta karta = kartaService.findByProjekcijaAndSediste(projekcija, s);
+			boolean zauzeto = false;
+			if(karta!=null)
+				zauzeto = true;
+			
+			SedisteDTO sDTO = new SedisteDTO(s,zauzeto);
+			retVal.add(sDTO);		
+		}
+		
+		return new ResponseEntity<ArrayList<SedisteDTO>>(retVal, HttpStatus.OK);
+	}
+	
+	
+	
 	
 	@PreAuthorize("hasAuthority('RK')")
 	@RequestMapping(value = "oceni/{mode}", method = RequestMethod.PUT, produces=MediaType.APPLICATION_JSON_VALUE )

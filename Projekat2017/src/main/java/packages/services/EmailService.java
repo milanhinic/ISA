@@ -1,5 +1,8 @@
 package packages.services;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
@@ -11,6 +14,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import packages.beans.Korisnik;
+import packages.beans.Rezervacija;
 
 @Service
 public class EmailService {
@@ -34,6 +38,74 @@ public class EmailService {
 		helper.setText(mailMessage,true);
 		
 		mailSender.send(message);
+		
+		
+	}
+	
+	@Async
+	public void sendRezervacijaMail(Rezervacija rezervacija) throws MessagingException{
+		
+		MimeMessage message = mailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(message, false);
+		helper.setFrom(environment.getProperty("spring.mail.username"));
+		helper.setTo(rezervacija.getRegKorisnik().getReg_korisnik_id().getEmail());
+		helper.setSubject("Isa Pozorista i Biskopi vasa rezeracija");
+		String datumProjekcije = new SimpleDateFormat("dd-MM-YYYY HH-mm").format(new Timestamp(rezervacija.getKarta().getProjekcija().getDatum().getTime()));
+		String mailMessage = "<html><body><p>Postovani "+rezervacija.getRegKorisnik().getReg_korisnik_id().getIme()+", ovo su podaci o vasoj rezervaciji: <br>"
+				+"<table><tr>" + 
+				"          <th>Film/Predstava</th>" + 
+				"          <th>Bioskop/Pozoriste</th>"+ 
+				"          <th>Sala</th>" + 
+				"          <th>Cena</th>" + 
+				"          <th>Sifra mesta</th>" + 
+				"          <th>Datum</th>" + 
+				"        </tr>"+
+				"<tr>"+
+				" <td>"+rezervacija.getKarta().getProjekcija().getPredFilm().getNaziv()+"</td>" + 
+				"            <td>"+rezervacija.getKarta().getProjekcija().getSala().getPozBio().getNaziv()+"</td>" + 
+				"            <td>" + rezervacija.getKarta().getProjekcija().getSala().getNaziv()+"</td>"+ 
+				"            <td>RSD "+rezervacija.getKarta().getSediste().getSegment().getTip().getCena()+" "+rezervacija.getKarta().getSediste().getSegment().getTip().getNaziv()+"</td>" + 
+				"            <td>"+rezervacija.getKarta().getSediste().getId()+"</td>" + 
+				"            <td>"+datumProjekcije+"</td>"						
+				+"</tr></table><br></p><p>Vasu rezervaciju mozete otkazati do pola sata pred pocetak predstave ili projekcije"
+				+ "</p></body></html>";
+			helper.setText(mailMessage, true);
+			
+			mailSender.send(message);
+	}
+	
+	@Async
+	void sendprijateljMail(Rezervacija rezervacija, Korisnik pozivalac) throws MessagingException{
+		
+		MimeMessage message = mailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(message, false);
+		helper.setFrom(environment.getProperty("spring.mail.username"));
+		helper.setTo(rezervacija.getRegKorisnik().getReg_korisnik_id().getEmail());
+		helper.setSubject("Isa Pozorista i Biskopi poziv na projekciju/predstavu");
+		String link = "http://localhost:8081/bioskopi-pozorista.com/app/odbijPozvi/"+rezervacija.getId();
+		
+		String datumProjekcije = new SimpleDateFormat("dd-MM-YYYY HH-mm").format(new Timestamp(rezervacija.getKarta().getProjekcija().getDatum().getTime()));
+		String mailMessage = "<html><body><p>Postovani "+rezervacija.getRegKorisnik().getReg_korisnik_id().getIme()+", korisnik "+pozivalac.getIme()+" "+pozivalac.getPrezime()+ " pozvao/la vas je da zajedno prisustvujete projekciji/predstavi: <br>"
+				+"<table><tr>" + 
+				"          <th>Film/Predstava</th>" + 
+				"          <th>Bioskop/Pozoriste</th>"+ 
+				"          <th>Sala</th>" + 
+				"          <th>Cena</th>" + 
+				"          <th>Sifra mesta</th>" + 
+				"          <th>Datum</th>" + 
+				"        </tr>"+
+				"<tr>"+
+				" <td>"+rezervacija.getKarta().getProjekcija().getPredFilm().getNaziv()+"</td>" + 
+				"            <td>"+rezervacija.getKarta().getProjekcija().getSala().getPozBio().getNaziv()+"</td>" + 
+				"            <td>" + rezervacija.getKarta().getProjekcija().getSala().getNaziv()+"</td>"+ 
+				"            <td>RSD "+rezervacija.getKarta().getSediste().getSegment().getTip().getCena()+" "+rezervacija.getKarta().getSediste().getSegment().getTip().getNaziv()+"</td>" + 
+				"            <td>"+rezervacija.getKarta().getSediste().getId()+"</td>" + 
+				"            <td>"+datumProjekcije+"</td>"						
+				+"</tr></table><br></p><p>Vasu rezervaciju mozete otkazati do pola sata pred pocetak predstave ili projekcije posecivanjem ovog linka <br>"+link
+				+ "</p></body></html>";
+			helper.setText(mailMessage, true);
+			
+			mailSender.send(message);
 		
 		
 	}
