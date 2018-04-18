@@ -1,6 +1,7 @@
 package packages.beans;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -11,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import packages.enumerations.OglasStatus;
@@ -38,7 +40,9 @@ public class Oglas implements Serializable{
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private OglasStatus status;
-
+	
+	
+	
 	public Oglas() {
 		
 	}
@@ -113,12 +117,9 @@ public class Oglas implements Serializable{
 
 	@Override
 	public String toString() {
-		return "Oglas [id=" + id + ", naziv=" + naziv + ", opis=" + opis + ", aktivnoDo=" + aktivnoDo + ", path=" + path
-				+ ", status=" + status + "]";
+		return "Oglas [id=" + id + ", naziv=" + naziv + ", opis=" + opis + ", aktivnoDo=" + aktivnoDo + ", path="
+				+ Arrays.toString(path) + ", status=" + status + "]";
 	}
-	
-	
-	
-	
+
 	
 }

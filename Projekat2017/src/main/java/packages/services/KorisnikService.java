@@ -1,5 +1,7 @@
 package packages.services;
 
+import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -77,5 +79,10 @@ public class KorisnikService implements KorisnikInterface{
 	public int deleteById(Long id) {
 		return korisnikRepository.deleteById(id);
 		
+	}
+
+	@Override
+	public ArrayList<Korisnik> getAllKorisnikListArray(RegKorisnikStatus status, KorisnikTip tip) {
+		return korisnikRepository.findByStatusAndTip(status, tip);
 	}	
 }

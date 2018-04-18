@@ -3,6 +3,7 @@ package packages.controllers;
 import java.util.ArrayList;
 
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -83,5 +85,27 @@ public class PonudaController {
 		
 		return new ResponseEntity<ArrayList<Ponuda>>(sale, HttpStatus.OK);
 	}
+	
+	@RequestMapping(value = "izmeniPonudu/{idOglas}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public ResponseEntity<Ponuda> izmeniSalu(@RequestBody @Valid Ponuda novaPonuda, @PathVariable int idOglas, BindingResult result){
+		
+		HttpHeaders httpHeader = new HttpHeaders();
+		
+		if(result.hasErrors()) {
+			httpHeader.add("message", "Neuspesna izmena ponude, nevalidan objekat.");
+			return new ResponseEntity<Ponuda>(null, httpHeader, HttpStatus.OK);
+		}
+		
+		Ponuda retVal = pc.addPonuda(novaPonuda);
+		if(retVal != null) {
+			httpHeader.add("message", "Uspesno izmenjena ponuda.");
+			return new ResponseEntity<Ponuda>(retVal, httpHeader, HttpStatus.OK);
+		}
+		
+		httpHeader.add("message", "Neuspesna izmena ponude.");
+		return new ResponseEntity<Ponuda>(null, httpHeader, HttpStatus.OK);
+	}
+	
 	
 }
