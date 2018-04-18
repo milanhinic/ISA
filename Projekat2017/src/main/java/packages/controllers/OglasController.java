@@ -1,12 +1,10 @@
 package packages.controllers;
 
 import java.io.IOException;
-
 import javax.servlet.ServletRequest;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.websocket.server.PathParam;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -221,7 +219,6 @@ public class OglasController {
 			
 		}	
 	 
-		
 		
 		httpHeader.add("message", "Neuspesno dodavanje novog oglasa.");
 		return new ResponseEntity<Oglas>(null,httpHeader, HttpStatus.OK);

@@ -1,7 +1,6 @@
 package packages.controllers;
 
 import java.util.ArrayList;
-
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

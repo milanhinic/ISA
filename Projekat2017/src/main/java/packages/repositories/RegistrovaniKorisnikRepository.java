@@ -1,13 +1,10 @@
 package packages.repositories;
 
-
 import java.util.Set;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-
 import packages.beans.Korisnik;
 import packages.beans.Oglas;
 import packages.beans.RegistrovaniKorisnik;
@@ -29,4 +26,5 @@ public interface RegistrovaniKorisnikRepository extends JpaRepository<Registrova
 	@Query("select count(k) from RegistrovaniKorisnik reg INNER JOIN reg.prijatelji prijatelji INNER JOIN prijatelji.reg_korisnik_id k where reg.reg_korisnik_id = ?1 and (UPPER(CONCAT(k.ime, ' ', k.prezime)) LIKE UPPER(?2) or UPPER(CONCAT(k.prezime, ' ', k.ime)) LIKE UPPER(?2))")
 	public Long countPrijateljiByNameAndSurname(Korisnik korisnik, String imeprezime);
 
+	
 }

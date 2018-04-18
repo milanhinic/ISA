@@ -3,11 +3,9 @@ package packages.controllers;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Set;
-
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -51,7 +49,8 @@ public class RegKorisnikController {
 	@Autowired
 	private RegistrovaniKorisnikService regKorisnikService;
 	
-	@PreAuthorize("hasAuthority('RK') or hasAuthority('AF')")
+	
+	@PreAuthorize("hasAuthority('RK') or hasAuthority('AU') or hasAuthority('AF')")
 	@RequestMapping(value = "vratiRegKorisnika", method = RequestMethod.GET)
 	public ResponseEntity<KorisnikDTO> vratiRegKorisnika(ServletRequest request){
 		
@@ -807,7 +806,6 @@ public class RegKorisnikController {
 		}else if(page<=0) {
 			return null;
 		}
-		
 	
 		return retVal;
 	}

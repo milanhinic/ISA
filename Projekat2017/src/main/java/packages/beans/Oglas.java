@@ -33,14 +33,13 @@ public class Oglas implements Serializable{
 	@Column(nullable = false)
 	private String aktivnoDo;
 	
-	@Column(nullable = false)
 	@Lob
+	@Column(nullable = false)
 	private byte[] path;
 	
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private OglasStatus status;
-	
 	
 	
 	public Oglas() {
@@ -114,6 +113,7 @@ public class Oglas implements Serializable{
 		this.status = status;
 	}
 
+	
 
 	@Override
 	public String toString() {
@@ -121,5 +121,9 @@ public class Oglas implements Serializable{
 				+ Arrays.toString(path) + ", status=" + status + "]";
 	}
 
+	
+	
+	
+	
 	
 }

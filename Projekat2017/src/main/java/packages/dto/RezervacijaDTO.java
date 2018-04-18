@@ -1,6 +1,9 @@
 package packages.dto;
 
+
 import java.util.Date;
+
+
 
 public class RezervacijaDTO {
 
@@ -132,4 +135,6 @@ public class RezervacijaDTO {
 	public void setProjekcijaId(Long projekcijaId) {
 		this.projekcijaId = projekcijaId;
 	};
+	
+	
 }
