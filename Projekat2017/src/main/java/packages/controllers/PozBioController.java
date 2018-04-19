@@ -1,5 +1,7 @@
 package packages.controllers;
 
+import java.util.ArrayList;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -246,34 +248,19 @@ public class PozBioController {
 		return new ResponseEntity<Double>(ocenaAmbijenta, HttpStatus.OK);
 	}
 	
-	//@PreAuthorize("hasAuthority('AU')")
-	@PreAuthorize("hasAuthority('RK')")
-	@RequestMapping(value = "secured/ukupanAmbijent", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Double> vratiAmbijent(@RequestParam int mode){
+	
+	@RequestMapping(value = "vratiSva", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ArrayList<ArrayList<PozBio>>> vratiSvee(){
 		
-		HttpHeaders httpHeader = new HttpHeaders();
+		ArrayList<ArrayList<PozBio>> retVal = new ArrayList<ArrayList<PozBio>>();
 		
-		Double retVal = null;
+		ArrayList<PozBio> pozs = pbs.getAllPozBiosList(PozBioTip.POZ);
+		ArrayList<PozBio> bios = pbs.getAllPozBiosList(PozBioTip.BIO);
 		
-		try {
-			if(mode != 0 && mode != 1) {
-				httpHeader.add("message", "Nedozvoljen tip, pokusajte ponovo!");
-				return new ResponseEntity<>(null, httpHeader, HttpStatus.OK);
-			}else if(mode == 0) {
-				retVal = pbs.getAverageAmbientScore(PozBioTip.POZ);
-			}else{
-				retVal = pbs.getAverageAmbientScore(PozBioTip.BIO);
-			}
+		retVal.add(pozs);
+		retVal.add(bios);
 		
-		}catch(NullPointerException e) {
-			new ResponseEntity<Double>(new Double(0), httpHeader, HttpStatus.OK);
-		}
-		
-		if(retVal != null) {
-			return new ResponseEntity<Double>(retVal, HttpStatus.OK);
-		}
-		
-		return new ResponseEntity<Double>(new Double(0), httpHeader, HttpStatus.OK);
+		return new ResponseEntity<ArrayList<ArrayList<PozBio>>>(retVal, HttpStatus.OK);
 	}
 
 }

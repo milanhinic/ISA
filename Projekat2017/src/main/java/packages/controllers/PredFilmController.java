@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import packages.beans.PozBio;
 import packages.beans.PredFilm;
 import packages.enumerations.PozBioTip;
 import packages.enumerations.PredFilmTip;
@@ -151,34 +152,20 @@ public class PredFilmController {
 		return new ResponseEntity<Double>(ocenaProjekcije, HttpStatus.OK);
 
 	}
-	
-	@PreAuthorize("hasAuthority('RK')")
-	@RequestMapping(value = "secured//ukupnoProjekcije", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Double> vratiAmbijent(@RequestParam int mode){
+
+	@RequestMapping(value = "vratiSvePredFilmove", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ArrayList<ArrayList<PredFilm>>> vratiSvee(){
 		
-		HttpHeaders httpHeader = new HttpHeaders();
+		ArrayList<ArrayList<PredFilm>> retVal = new ArrayList<ArrayList<PredFilm>>();
 		
-		Double retVal = null;
+		ArrayList<PredFilm> preds = pfs.getAllPredFilmsByTip(PredFilmTip.PRED);
+		ArrayList<PredFilm> films = pfs.getAllPredFilmsByTip(PredFilmTip.FILM);
 		
-		try {
-			if(mode != 0 && mode != 1) {
-				httpHeader.add("message", "Nedozvoljen tip, pokusajte ponovo!");
-				return new ResponseEntity<>(null, httpHeader, HttpStatus.OK);
-			}else if(mode == 0) {
-				retVal = pfs.getAverageProjectionScore(PredFilmTip.PRED);
-			}else{
-				retVal = pfs.getAverageProjectionScore(PredFilmTip.FILM);
-			}
+		retVal.add(preds);
+		retVal.add(films);
 		
-		}catch(NullPointerException e) {
-			new ResponseEntity<Double>(new Double(0), httpHeader, HttpStatus.OK);
-		}
-		
-		if(retVal != null) {
-			return new ResponseEntity<Double>(retVal, HttpStatus.OK);
-		}
-		
-		return new ResponseEntity<Double>(new Double(0), httpHeader, HttpStatus.OK);
+		return new ResponseEntity<ArrayList<ArrayList<PredFilm>>>(retVal, HttpStatus.OK);
+
 	}
 
 }

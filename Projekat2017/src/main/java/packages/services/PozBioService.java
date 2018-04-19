@@ -83,6 +83,12 @@ public class PozBioService implements PozBioInterface {
 		
 		return (double)ukupno/count;
 	}
+
+	@Override
+	public ArrayList<PozBio> getAllPozBiosList(PozBioTip tip) {
+		// TODO Auto-generated method stub
+		return pbr.findByTip(tip);
+	}
 	
 
 }
