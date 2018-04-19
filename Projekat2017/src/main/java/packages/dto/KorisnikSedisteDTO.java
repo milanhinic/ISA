@@ -1,8 +1,15 @@
 package packages.dto;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
 public class KorisnikSedisteDTO {
 
+	@NotNull(message = "Morate uneti id korisnika")
+	@Min(value = 1, message = "Morate uneti id korisnika")
 	private Long korisnikId;
+	@NotNull(message = "Morate uneti id sedista")
+	@Min(value = 1, message = "Morate uneti id sedista")
 	private Long sedisteId;
 	
 	public KorisnikSedisteDTO() {}

@@ -2,9 +2,19 @@ package packages.dto;
 
 import java.util.ArrayList;
 
-public class RezervisiDTO {
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
-	private ArrayList<KorisnikSedisteDTO> korisnikSedistaDTO;
+import packages.validators.KorisnikSedisteValidation;
+
+public class RezervisiDTO {
+	
+	@KorisnikSedisteValidation
+	private @Valid ArrayList<KorisnikSedisteDTO> korisnikSedistaDTO;
+	
+	@NotNull(message = "Morate uneti id projekcije")
+	@Min(value = 1, message = "Morate uneti id projekcije")
 	private Long projekcijaId;
 	
 	public RezervisiDTO() {}

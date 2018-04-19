@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import javax.mail.MessagingException;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -455,7 +457,7 @@ public class RezervacijaController {
 	
 	@PreAuthorize("hasAuthority('RK')")
 	@RequestMapping(value="rezervisiKarte", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Boolean> vratiSedistaZaProj(@RequestBody RezervisiDTO rezervisiDTO, ServletRequest request){
+	public ResponseEntity<Boolean> vratiSedistaZaProj(@Valid @RequestBody RezervisiDTO rezervisiDTO, ServletRequest request, BindingResult result){
 		
 		HttpHeaders header = new HttpHeaders();
 		
@@ -471,6 +473,11 @@ public class RezervacijaController {
 		Korisnik korisnik = korisnikService.getKorisnikByEmail(email);
 		
 		RegistrovaniKorisnik logregKorisnik = regKorisnikService.getRegKorisnikByKorisnikId(korisnik);
+		
+		if(result.hasErrors()) {
+			header.set("message", result.getAllErrors().get(0).getDefaultMessage());
+			return new ResponseEntity<Boolean>(false,header, HttpStatus.OK);
+		}
 		
 		if(korisnik==null) {
 			header.add("message", "Nepostojeci korisnik, greska");
