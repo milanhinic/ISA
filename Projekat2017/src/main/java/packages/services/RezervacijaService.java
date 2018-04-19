@@ -9,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import packages.beans.PozBio;
+import packages.beans.Projekcija;
 import packages.beans.RegistrovaniKorisnik;
 import packages.beans.Rezervacija;
 import packages.repositories.RezervacijaRepository;
@@ -82,6 +84,18 @@ public class RezervacijaService implements RezervacijaInterface{
 		Date date = new Date(currentTimeMilisec);
 		
 		return rezervacijaRepository.findOneByRegKorisnikAndCanCancel(registrovaniKorisnik, date, id);
+	}
+
+	@Override
+	public Double getPrihod(Projekcija p) {
+		// TODO Auto-generated method stub
+		return rezervacijaRepository.getPrihod(p);
+	}
+
+	@Override
+	public Integer countVisitsForDate(PozBio pozBio, Date dayStart, Date dayEnd) {
+		// TODO Auto-generated method stub
+		return rezervacijaRepository.countVisitsForDate(pozBio, dayStart, dayEnd);
 	}
 	
 }

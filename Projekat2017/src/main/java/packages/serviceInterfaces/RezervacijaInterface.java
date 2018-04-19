@@ -1,10 +1,13 @@
 package packages.serviceInterfaces;
 
+import java.util.Date;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import packages.beans.PozBio;
 import packages.beans.PredFilm;
+import packages.beans.Projekcija;
 import packages.beans.RegistrovaniKorisnik;
 import packages.beans.Rezervacija;
 
@@ -26,5 +29,7 @@ public interface RezervacijaInterface {
 	
 	public Rezervacija findOneByKorisnikAndCanCancel(RegistrovaniKorisnik registrovaniKorisnik, Long id);
 	
+	public Double getPrihod(Projekcija p);
 	
+	public Integer countVisitsForDate(PozBio pozBio, Date dayStart, Date dayEnd);
 }
