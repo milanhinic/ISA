@@ -47,7 +47,7 @@ public class KartaService implements KartaInterface{
 		
 		for(Karta k : karte) {
 			Karta ret = kartaRepository.save(k);
-			retVal.add(k);
+			retVal.add(ret);
 		}
 		
 		return retVal;
