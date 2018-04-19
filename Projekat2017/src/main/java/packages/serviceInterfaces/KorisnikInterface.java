@@ -1,5 +1,7 @@
 package packages.serviceInterfaces;
 
+import java.util.ArrayList;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -20,6 +22,8 @@ public interface KorisnikInterface {
 	public Page<Korisnik> getKorisnikList(RegKorisnikStatus status,KorisnikTip tip,String email,Pageable pageable);
 	
 	public Page<Korisnik> getAllKorisnikList(RegKorisnikStatus status,KorisnikTip tip, Pageable pageable);
+	
+	public ArrayList<Korisnik> getAllKorisnikListArray(RegKorisnikStatus status,KorisnikTip tip);
 	
 	public Long getRegKorisnikCount(RegKorisnikStatus status,KorisnikTip tip,String email);
 	

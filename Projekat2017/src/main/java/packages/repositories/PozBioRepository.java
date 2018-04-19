@@ -1,6 +1,8 @@
 package packages.repositories;
 
 
+import java.util.ArrayList;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,5 +19,7 @@ public interface PozBioRepository extends JpaRepository<PozBio, Long>{
 	Page<PozBio> findByTipAndNazivLikeIgnoreCase(PozBioTip tip, String naziv, Pageable pageable);
 	
 	Long countByTipAndNazivLikeIgnoreCase(PozBioTip tip, String naziv);
+	
+	ArrayList<PozBio> findByTip(PozBioTip tip);
 	
 }

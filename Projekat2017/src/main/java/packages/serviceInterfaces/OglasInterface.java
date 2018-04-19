@@ -1,5 +1,7 @@
 package packages.serviceInterfaces;
 
+import java.util.ArrayList;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -14,10 +16,13 @@ public interface OglasInterface {
 	
 	public Oglas getOglasByIdAndStatus(Long id, OglasStatus status);
 	
+	public Oglas getOglasByNazivAndStatus(String naziv, OglasStatus status);
+	
 	public Page<Oglas> getAllOglasiByStatus(OglasStatus status, Pageable page);
 	
 	public int deleteOglas(Long id);
 	
+	public ArrayList<Oglas> getAllOglasiByStatus(OglasStatus status);
 
 	
 }

@@ -2,7 +2,6 @@ package packages.beans;
 
 import java.io.Serializable;
 import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -31,10 +30,7 @@ public class RegistrovaniKorisnik implements Serializable{
 	
 	@ManyToMany
 	private Set<RegistrovaniKorisnik> prijatelji;
-	
-	@OneToMany
-	private Set<Oglas> licniOglasi;
-	
+		
 	public RegistrovaniKorisnik(Long id, Korisnik reg_korisnik_id, int br_bodova) {
 		super();
 		this.id = id;
@@ -74,16 +70,10 @@ public class RegistrovaniKorisnik implements Serializable{
 		this.prijatelji = prijatelji;
 	}
 
-	public Set<Oglas> getLicniOglasi() {
-		return licniOglasi;
-	}
-
-	public void setLicniOglasi(Set<Oglas> licniOglasi) {
-		this.licniOglasi = licniOglasi;
-	}
 
 	@Override
 	public String toString() {
 		return "RegistrovaniKorisnik [id=" + id + ", reg_korisnik_id=" + reg_korisnik_id + ", br_bodova=" + br_bodova+"]";
 	}
+
 }

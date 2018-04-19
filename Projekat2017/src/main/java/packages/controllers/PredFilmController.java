@@ -11,15 +11,19 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import packages.beans.PozBio;
 import packages.beans.PredFilm;
+import packages.enumerations.PozBioTip;
 import packages.enumerations.PredFilmTip;
 import packages.services.PredFilmService;
 
@@ -148,6 +152,20 @@ public class PredFilmController {
 		return new ResponseEntity<Double>(ocenaProjekcije, HttpStatus.OK);
 
 	}
-	
+
+	@RequestMapping(value = "vratiSvePredFilmove", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ArrayList<ArrayList<PredFilm>>> vratiSvee(){
+		
+		ArrayList<ArrayList<PredFilm>> retVal = new ArrayList<ArrayList<PredFilm>>();
+		
+		ArrayList<PredFilm> preds = pfs.getAllPredFilmsByTip(PredFilmTip.PRED);
+		ArrayList<PredFilm> films = pfs.getAllPredFilmsByTip(PredFilmTip.FILM);
+		
+		retVal.add(preds);
+		retVal.add(films);
+		
+		return new ResponseEntity<ArrayList<ArrayList<PredFilm>>>(retVal, HttpStatus.OK);
+
+	}
 
 }

@@ -1,5 +1,12 @@
 package packages.controllers;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,9 +26,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import packages.beans.PozBio;
-import packages.beans.PredFilm;
+import packages.beans.Projekcija;
+import packages.dto.PrihodDTO;
 import packages.enumerations.PozBioTip;
+import packages.security.TokenUtils;
+import packages.services.KorisnikService;
 import packages.services.PozBioService;
+import packages.services.ProjekcijaService;
+import packages.services.RezervacijaService;
 
 @RestController
 @RequestMapping(value = "app/")
@@ -28,6 +41,18 @@ public class PozBioController {
 	
 	@Autowired
 	PozBioService pbs;
+	
+	@Autowired 
+	TokenUtils tokenUtils;
+	
+	@Autowired
+	KorisnikService korisnikService;
+	
+	@Autowired 
+	ProjekcijaService prs;
+	
+	@Autowired 
+	RezervacijaService rzs;
 	
 	@RequestMapping(value = "bioskopi/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
@@ -235,6 +260,154 @@ public class PozBioController {
 		}
 		
 		return new ResponseEntity<Double>(ocenaAmbijenta, HttpStatus.OK);
+	}
+	
+	
+	@RequestMapping(value = "vratiSva", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ArrayList<ArrayList<PozBio>>> vratiSvee(){
+		
+		ArrayList<ArrayList<PozBio>> retVal = new ArrayList<ArrayList<PozBio>>();
+		
+		ArrayList<PozBio> pozs = pbs.getAllPozBiosList(PozBioTip.POZ);
+		ArrayList<PozBio> bios = pbs.getAllPozBiosList(PozBioTip.BIO);
+		
+		retVal.add(pozs);
+		retVal.add(bios);
+		
+		return new ResponseEntity<ArrayList<ArrayList<PozBio>>>(retVal, HttpStatus.OK);
+	}
+	
+	@PreAuthorize("hasAuthority('RK')")
+	@RequestMapping(value = "secured/prihod", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Double> izracunajPrihod(@RequestBody PrihodDTO inParam){
+		
+		System.out.println(inParam.getIdPozBio()+" "+inParam.getDatumOd()+" "+inParam.getDatumDo());
+		
+		HttpHeaders header = new HttpHeaders();
+		
+		if(inParam.getDatumOd() == null || inParam.getDatumOd().isEmpty() || inParam.getDatumOd().length() < 16 
+				|| inParam.getDatumDo() == null || inParam.getDatumDo().isEmpty() || inParam.getDatumDo().length() < 16) {
+			header.add("message", "Neispravno vreme!");
+			return new ResponseEntity<>(null, header, HttpStatus.OK);
+		}
+		
+		String tempDatOd = inParam.getDatumOd().substring(0, 16);
+		String tempDatDo = inParam.getDatumDo().substring(0, 16);
+		
+		DateFormat formatter = new SimpleDateFormat("E MMM dd yyyy");
+		Date pocetak = null;
+		Date kraj = null;
+		try {
+			pocetak = (Date)formatter.parse(tempDatOd);        
+			kraj = (Date)formatter.parse(tempDatDo);
+		} catch (ParseException e) {
+			header.add("message", "Neispravan format datuma!");
+			return new ResponseEntity<>(null, header, HttpStatus.OK);
+		}
+		
+		PozBio pozBio = pbs.getPozBio(new Long(inParam.getIdPozBio()));
+		
+		if(pozBio == null) {
+			header.add("message", "Trazite prihod za nepostojeci entitet!");
+			return new ResponseEntity<>(null, header, HttpStatus.OK);
+		}
+		
+		ArrayList<Projekcija> projIzmedju = prs.getProjekcijasBetween(pozBio, pocetak, kraj);
+		Double ukupno = 0.0;
+		
+		if(!projIzmedju.isEmpty()) {
+			for(Projekcija tempProj : projIzmedju) {
+				Double prihod = rzs.getPrihod(tempProj);
+				if(prihod != null) {
+					ukupno += prihod;
+				}
+			}
+		}
+		
+		return new ResponseEntity<Double>(ukupno, HttpStatus.OK) ;
+	}
+	
+	@PreAuthorize("hasAuthority('RK')")
+	@RequestMapping(value = "secured/dijagram", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ArrayList<Integer>> vratiPosete(@RequestBody PrihodDTO inParam){
+	
+		System.out.println(inParam.toString());
+		
+		HttpHeaders header = new HttpHeaders();
+		
+		if(inParam.getDatumOd() == null || inParam.getDatumOd().isEmpty() || inParam.getDatumOd().length() < 16 ) {
+			header.add("message", "Neispravno vreme!");
+			return new ResponseEntity<>(null, header, HttpStatus.OK);
+		}
+		
+		DateFormat formatter = new SimpleDateFormat("E MMM dd yyyy");
+		Date pocetak = null;
+		try {
+			pocetak = (Date)formatter.parse(inParam.getDatumOd());        
+
+		} catch (ParseException e) {
+			header.add("message", "Neispravan format datuma!");
+			return new ResponseEntity<>(null, header, HttpStatus.OK);
+		}
+		
+		PozBio pozBio = pbs.getPozBio(new Long(inParam.getIdPozBio()));
+		
+		if(pozBio == null) {
+			header.add("message", "Trazite izvestaj za nepostojeci entitet!");
+			return new ResponseEntity<>(null, header, HttpStatus.OK);
+		}
+
+		ArrayList<Integer> retVal = getRetVal(pocetak, inParam.getMode(), pozBio);
+		
+		if(retVal == null) {
+			header.add("message", "Pogresni ulazi, pokusajte ponovo!");
+			return new ResponseEntity<>(null, header, HttpStatus.OK);
+		}
+		
+		return new ResponseEntity<ArrayList<Integer>>(retVal, HttpStatus.OK);
+	}
+	
+	private ArrayList<Integer> getRetVal(Date pocetak, int mode, PozBio pozBio) {
+		
+		ArrayList<Integer> retVal = new ArrayList<Integer>();
+		
+		Calendar cal = Calendar.getInstance();
+		long ONE_DAY_IN_MILLIS = 86400000;
+		
+		int brojIteracija;
+		
+		//dnevni izvestaj
+		if(mode == 0) {
+			brojIteracija = 1;
+			
+		//nedeljni izvestaj
+		}else if(mode == 1) {
+			brojIteracija = 7;
+			
+		//mesecni izvestaj
+		}else if(mode == 2) {
+			brojIteracija = 30;
+		}else {
+			return null;
+		}
+		
+		for(int i = 0; i < brojIteracija; i++) {
+			
+			cal.setTime(pocetak);
+			long vremePocetka = cal.getTimeInMillis();
+			Date kraj = new Date(vremePocetka + ONE_DAY_IN_MILLIS);
+			Integer brojPoseta = rzs.countVisitsForDate(pozBio, pocetak, kraj);
+			
+			if(brojPoseta != null) {
+				retVal.add(brojPoseta);
+			}else {
+				retVal.add(new Integer(0));
+			}
+			
+			pocetak = kraj;
+		}
+		
+		return retVal;
 	}
 
 }

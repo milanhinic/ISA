@@ -27,5 +27,9 @@ public interface PozBioInterface {
 	
 	public Double getAmbientScore(PozBio pozBio);
 	
+	public Double getAverageAmbientScore(PozBioTip tip);
+	
+	public ArrayList<PozBio> getAllPozBiosList(PozBioTip tip);
+	
 
 }

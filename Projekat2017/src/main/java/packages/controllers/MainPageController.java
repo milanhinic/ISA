@@ -1,5 +1,6 @@
 package packages.controllers;
 
+import java.util.ArrayList;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,6 +29,7 @@ public class MainPageController {
 	@Autowired
 	KorisnikService kser;
 
+
 	
 	@RequestMapping(value = "adminFz/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
@@ -39,6 +41,35 @@ public class MainPageController {
 		}
 		
 		return retVal;
+
+	}
+
+	
+	@RequestMapping(value = "adminFzA", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public ArrayList<Korisnik> vratiAdministratoreFzA() {
+		
+		ArrayList<Korisnik> retVal = kser.getAllKorisnikListArray(RegKorisnikStatus.A, KorisnikTip.AF);
+		if(retVal.size() <= 0) {
+			return null;
+		}
+		
+		return retVal;
+	}
+
+	
+	@RequestMapping(value = "adminPB", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public ArrayList<Korisnik> vratiAdministratorePB() {
+		
+		ArrayList<Korisnik> retVal = kser.getAllKorisnikListArray(RegKorisnikStatus.A, KorisnikTip.AU);
+		if(retVal.size() <= 0) {
+			return null;
+		}
+		
+		return retVal;
+
+
 	}
 
 	@RequestMapping(value = "adminSis/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
