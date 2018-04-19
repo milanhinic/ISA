@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import javax.mail.MessagingException;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 
@@ -16,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,10 +31,15 @@ import packages.beans.Rezervacija;
 import packages.beans.Sala;
 import packages.beans.Sediste;
 import packages.beans.Segment;
+import packages.dto.KorisnikSedisteDTO;
 import packages.dto.RezervacijaDTO;
+import packages.dto.RezervisiDTO;
 import packages.dto.SedisteDTO;
 import packages.dto.SegmentDTO;
+import packages.exceptions.KartaExistsException;
 import packages.security.TokenUtils;
+import packages.serviceInterfaces.KartaInterface;
+import packages.services.EmailService;
 import packages.services.KartaService;
 import packages.services.KorisnikService;
 import packages.services.ProjekcijaService;
@@ -46,7 +53,7 @@ import packages.services.SegmentService;
 public class RezervacijaController {
 
 	@Autowired
-	private KartaService kartaService;
+	private KartaInterface kartaService;
 	
 	@Autowired
 	private RezervacijaService rezervacijaService;
@@ -68,6 +75,9 @@ public class RezervacijaController {
 	
 	@Autowired
 	private SedisteService sedisteService;
+	
+	@Autowired
+	private EmailService emailService;
 	
 	@PreAuthorize("hasAuthority('RK')")
 	@RequestMapping(value = "vratiRezervacije/{page}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -442,5 +452,190 @@ public class RezervacijaController {
 		
 		return new ResponseEntity<Boolean>(true, HttpStatus.OK);
 	}
+	
+	@PreAuthorize("hasAuthority('RK')")
+	@RequestMapping(value="rezervisiKarte", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Boolean> vratiSedistaZaProj(@RequestBody RezervisiDTO rezervisiDTO, ServletRequest request){
+		
+		HttpHeaders header = new HttpHeaders();
+		
+		HttpServletRequest httpRequest = (HttpServletRequest) request;
+		String token = httpRequest.getHeader("token");
+		
+		if(token == null) {
+			return null;
+		}
+		
+		String email = tokenUtils.getUsernameFromToken(token);
+
+		Korisnik korisnik = korisnikService.getKorisnikByEmail(email);
+		
+		RegistrovaniKorisnik logregKorisnik = regKorisnikService.getRegKorisnikByKorisnikId(korisnik);
+		
+		if(korisnik==null) {
+			header.add("message", "Nepostojeci korisnik, greska");
+			return new ResponseEntity<Boolean>(false, header, HttpStatus.OK);
+		}
+		
+		Projekcija projekcija = projekcijaService.getProjekcija(rezervisiDTO.getProjekcijaId());
+		if(projekcija==null) {
+			header.add("message", "Projekcija ne postoji");
+			return new ResponseEntity<Boolean>(false,header,HttpStatus.OK);
+		}
+		
+		if(projekcija.getDatum().getTime()<=System.currentTimeMillis()) {
+			header.add("message", "Ne mozete rezervisati kartu zato sto projekcija vec postoji");
+			return new ResponseEntity<Boolean>(false,header,HttpStatus.OK);
+		}
+		
+		ArrayList<Long> sedistaIds = new ArrayList<Long>();
+		ArrayList<Long> korisniciIds = new ArrayList<Long>();
+		ArrayList<Karta> karte = new ArrayList<Karta>();
+		boolean imaPrijatelja = false;
+		
+		for(KorisnikSedisteDTO ksDTO : rezervisiDTO.getKorisnikSedistaDTO()) {
+			
+			Korisnik k = korisnikService.getKorisnik(ksDTO.getKorisnikId());
+			if(k==null) {
+				header.add("message", "Korisnik ne postoji");
+				return new ResponseEntity<Boolean>(false,header,HttpStatus.OK);
+			}
+			
+			if(!korisniciIds.contains(ksDTO.getKorisnikId())) {
+				korisniciIds.add(ksDTO.getKorisnikId());
+			}
+			
+			if(sedistaIds.contains(ksDTO.getSedisteId())) {
+				header.add("message", "Jedno mesto ne sme da bude rezervisano za vise korisnika");
+				return new ResponseEntity<Boolean>(false,header,HttpStatus.OK);
+			}
+			sedistaIds.add(ksDTO.getSedisteId());
+		}
+		
+		for(Long sId : sedistaIds) {
+			Sediste s = sedisteService.getSediste(sId);
+			if(s==null) {
+				header.add("message", "Sediste ne postoji");
+				return new ResponseEntity<Boolean>(false,header,HttpStatus.OK);		
+			}
+			
+			if(s.getSegment().getSala().getId()!=projekcija.getSala().getId()) {
+				
+				header.add("message", "Sediste se ne nalazi u istoj sali kao i projekcija");
+				return new ResponseEntity<Boolean>(false,header,HttpStatus.OK);		
+				
+			}
+			
+			Karta karta = new Karta(null,projekcija,s,false);
+			karte.add(karta);
+			
+		}
+		
+		
+		if(korisniciIds.size()>1)
+			imaPrijatelja = true;
+		
+		if(!imaPrijatelja) {
+			
+			if(korisnik.getId()!=korisniciIds.get(0)) {	
+				header.add("message", "Nemate pravo da rezervisete ova mesta");
+				return new ResponseEntity<Boolean>(false,header,HttpStatus.OK);				
+			}
+			
+			ArrayList<Karta> kartePrave = null;
+			
+			try {
+				kartePrave = kartaService.createKarte(karte);
+			}catch(KartaExistsException e) {
+				header.add("message", e.getMessage());
+				return new ResponseEntity<Boolean>(false,header,HttpStatus.OK);				
+			}catch(Exception e) {
+				header.add("message", "Doslo je do greske");
+				return new ResponseEntity<Boolean>(false,header,HttpStatus.OK);				
+			}
+			
+			ArrayList<Rezervacija> rezervacije = new ArrayList<Rezervacija>();
+			
+			for(int i = 0; i < rezervisiDTO.getKorisnikSedistaDTO().size(); i++) {
+				
+				Rezervacija r = new Rezervacija(null, kartePrave.get(i), logregKorisnik, null, null);
+				r = rezervacijaService.createRezervacija(r);
+				rezervacije.add(r);
+			}
+			
+			try {
+				emailService.sendRezervacijaMail(rezervacije);
+			} catch (MessagingException e) {
+				e.printStackTrace();
+			}		
+			
+		}else {
+			
+			boolean nasli = false;
+			for(Long k : korisniciIds) {
+				if(k==korisnik.getId()) {
+					nasli = true;
+					break;
+				}
+			}
+			
+			if(!nasli) {
+				header.add("message", "Nemate pravo da rezervisete ova mesta");
+				return new ResponseEntity<Boolean>(false,header,HttpStatus.OK);					
+			}
+			
+			ArrayList<Karta> kartePrave = null;
+			
+			try {
+				kartePrave = kartaService.createKarte(karte);
+			}catch(KartaExistsException e) {
+				header.add("message", e.getMessage());
+				return new ResponseEntity<Boolean>(false,header,HttpStatus.OK);				
+			}catch(Exception e) {
+				header.add("message", "Doslo je do greske");
+				return new ResponseEntity<Boolean>(false,header,HttpStatus.OK);				
+			}
+			
+			ArrayList<Rezervacija> rezervacijeRK = new ArrayList<Rezervacija>();
+			
+			for(int i = 0; i < rezervisiDTO.getKorisnikSedistaDTO().size(); i++) {
+				
+				if(rezervisiDTO.getKorisnikSedistaDTO().get(i).getKorisnikId()==korisnik.getId()) {
+					Rezervacija r = new Rezervacija(null, kartePrave.get(i), logregKorisnik, null, null);
+					rezervacijeRK.add(r);	
+				}else {
+					Korisnik k = korisnikService.getKorisnik(rezervisiDTO.getKorisnikSedistaDTO().get(i).getKorisnikId());
+					RegistrovaniKorisnik rK = regKorisnikService.getRegKorisnikByKorisnikId(k);
+					
+					Rezervacija r = new Rezervacija(null, kartePrave.get(i), rK, null, null);
+					r = rezervacijaService.createRezervacija(r);
+					
+					try {
+						emailService.sendprijateljMail(r, korisnik);
+					} catch (MessagingException e) {
+						e.printStackTrace();
+					}		
+					
+				}	
+			}
+			
+			ArrayList<Rezervacija> rezervacijeSlanje = new ArrayList<Rezervacija>();
+			for(Rezervacija r : rezervacijeRK) {
+				
+				r = rezervacijaService.createRezervacija(r);
+				rezervacijeSlanje.add(r);
+			}
+			
+			try {
+				emailService.sendRezervacijaMail(rezervacijeSlanje);
+			} catch (MessagingException e) {
+				e.printStackTrace();
+			}		
+			
+		}
+			
+		return new ResponseEntity<Boolean>(true,HttpStatus.OK);
+	}
+	
 	
 }
