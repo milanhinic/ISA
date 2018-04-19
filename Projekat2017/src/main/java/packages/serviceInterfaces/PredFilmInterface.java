@@ -23,5 +23,7 @@ public interface PredFilmInterface {
 	public ArrayList<PredFilm> getAllPredFilmsByTip(PredFilmTip tip);
 	
 	public Double getProjectionScore(PredFilm predFilm);
+	
+	public Double getAverageProjectionScore(PredFilmTip tip);
 
 }

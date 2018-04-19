@@ -9,17 +9,20 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import packages.beans.PozBio;
-import packages.beans.PredFilm;
 import packages.enumerations.PozBioTip;
+import packages.security.TokenUtils;
+import packages.services.KorisnikService;
 import packages.services.PozBioService;
 
 @RestController
@@ -28,6 +31,12 @@ public class PozBioController {
 	
 	@Autowired
 	PozBioService pbs;
+	
+	@Autowired 
+	TokenUtils tokenUtils;
+	
+	@Autowired
+	KorisnikService korisnikService;
 	
 	@RequestMapping(value = "bioskopi/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
@@ -235,6 +244,36 @@ public class PozBioController {
 		}
 		
 		return new ResponseEntity<Double>(ocenaAmbijenta, HttpStatus.OK);
+	}
+	
+	//@PreAuthorize("hasAuthority('AU')")
+	@PreAuthorize("hasAuthority('RK')")
+	@RequestMapping(value = "secured/ukupanAmbijent", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Double> vratiAmbijent(@RequestParam int mode){
+		
+		HttpHeaders httpHeader = new HttpHeaders();
+		
+		Double retVal = null;
+		
+		try {
+			if(mode != 0 && mode != 1) {
+				httpHeader.add("message", "Nedozvoljen tip, pokusajte ponovo!");
+				return new ResponseEntity<>(null, httpHeader, HttpStatus.OK);
+			}else if(mode == 0) {
+				retVal = pbs.getAverageAmbientScore(PozBioTip.POZ);
+			}else{
+				retVal = pbs.getAverageAmbientScore(PozBioTip.BIO);
+			}
+		
+		}catch(NullPointerException e) {
+			new ResponseEntity<Double>(new Double(0), httpHeader, HttpStatus.OK);
+		}
+		
+		if(retVal != null) {
+			return new ResponseEntity<Double>(retVal, HttpStatus.OK);
+		}
+		
+		return new ResponseEntity<Double>(new Double(0), httpHeader, HttpStatus.OK);
 	}
 
 }

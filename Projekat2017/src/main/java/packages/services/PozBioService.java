@@ -73,6 +73,16 @@ public class PozBioService implements PozBioInterface {
 		
 		return (double)ukupno/count;
 	}
+
+
+	@Override
+	public Double getAverageAmbientScore(PozBioTip tip) {
+		// TODO Auto-generated method stub
+		Long ukupno = rr.getAmbientScoresI(tip);
+		Long count = rr.countAmbientScoresI(tip);
+		
+		return (double)ukupno/count;
+	}
 	
 
 }

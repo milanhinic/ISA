@@ -66,4 +66,13 @@ public class PredFilmService implements PredFilmInterface{
 	
 		return (double)ukupno/count;
 	}
+
+	@Override
+	public Double getAverageProjectionScore(PredFilmTip tip) {
+		// TODO Auto-generated method stub
+		Long ukupno = rr.getProjectionScoresI(tip);
+		Long count = rr.countProjectionScoresI(tip);
+	
+		return (double)ukupno/count;
+	}
 }
