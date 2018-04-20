@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
@@ -26,7 +27,6 @@ import packages.beans.PozBio;
 import packages.beans.PredFilm;
 import packages.beans.Projekcija;
 import packages.beans.Sala;
-import packages.enumerations.PozBioTip;
 import packages.services.PozBioService;
 import packages.services.PredFilmService;
 import packages.services.ProjekcijaService;
@@ -220,4 +220,22 @@ public class ProjekcijaController {
 		
 		return new ResponseEntity<Page<Projekcija>>(retVal, HttpStatus.OK);
 	}
+	
+	@PreAuthorize("hasAuthority('AU')")
+	@RequestMapping(value = "secured/obrisiProj/{idProj}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE )
+	public ResponseEntity<Boolean> obrisiProj(@PathVariable int idProj){
+		
+		Projekcija projekcija = ps.getProjekcija(new Long(idProj));
+		
+		if(projekcija != null) {
+			try {
+				ps.deleteProjekcija(projekcija);
+			}catch(DataIntegrityViolationException e) {
+				return null;
+			}
+		}
+	
+		return new ResponseEntity<Boolean> (true, HttpStatus.OK);
+	}
+	
 }

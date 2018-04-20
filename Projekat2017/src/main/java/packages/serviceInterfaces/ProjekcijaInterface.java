@@ -30,4 +30,6 @@ public interface ProjekcijaInterface {
 	
 	public Long countByPredFilm(PredFilm predFilm);
 	
+	public void deleteProjekcija(Projekcija projekcija);
+	
 }
