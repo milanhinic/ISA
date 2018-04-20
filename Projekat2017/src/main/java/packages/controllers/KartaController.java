@@ -31,6 +31,7 @@ import packages.beans.RegistrovaniKorisnik;
 import packages.beans.Rezervacija;
 import packages.beans.Sediste;
 import packages.security.TokenUtils;
+import packages.serviceInterfaces.KartaInterface;
 import packages.services.KartaService;
 import packages.services.KorisnikService;
 import packages.services.PozBioService;
@@ -47,7 +48,7 @@ public class KartaController {
 	private SedisteService ss;
 	
 	@Autowired
-	private KartaService ks;
+	private KartaInterface ks;
 	
 	@Autowired
 	private ProjekcijaService ps;
