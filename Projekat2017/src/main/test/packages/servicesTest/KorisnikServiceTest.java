@@ -28,7 +28,7 @@ public class KorisnikServiceTest {
 	@Test
 	@Transactional
     @Rollback(true)
-	public void testAddKorisnik() {
+	public void testAddKorisnik(){
 		
 		Korisnik korisnik = new Korisnik();
 		korisnik.setEmail(KorisnikContstraints.NEW_EMAIL);
