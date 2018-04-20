@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -14,6 +15,8 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.Cascade;
 
 import packages.enumerations.OglasStatus;
 
@@ -41,9 +44,21 @@ public class Oglas implements Serializable{
 	@Enumerated(EnumType.STRING)
 	private OglasStatus status;
 	
+	@ManyToOne(optional = false)
+	private RegistrovaniKorisnik rk;
 	
 	public Oglas() {
 		
+	}
+	
+	public Oglas(Long id, String naziv, String opis, String aktivnoDo, byte[] path, OglasStatus status, RegistrovaniKorisnik rk) {
+		super();
+		this.id = id;
+		this.naziv = naziv;
+		this.opis = opis;
+		this.aktivnoDo = aktivnoDo;
+		this.status = status;
+		this.rk = rk;
 	}
 
 	public Oglas(Long id, String naziv, String opis, String aktivnoDo, byte[] path, OglasStatus status) {
@@ -54,7 +69,17 @@ public class Oglas implements Serializable{
 		this.aktivnoDo = aktivnoDo;
 		this.status = status;
 	}
-	
+
+	public Oglas(String naziv, String opis, String aktivnoDo, byte[] path, OglasStatus status, RegistrovaniKorisnik rk) {
+		super();
+		this.naziv = naziv;
+		this.opis = opis;
+		this.aktivnoDo = aktivnoDo;
+		this.path = path;
+		this.status = status;
+		this.rk = rk;
+	}
+
 	public Oglas(String naziv, String opis, String aktivnoDo, byte[] path, OglasStatus status) {
 		super();
 		this.naziv = naziv;
@@ -114,14 +139,19 @@ public class Oglas implements Serializable{
 	}
 	
 
+	public RegistrovaniKorisnik getRk() {
+		return rk;
+	}
+
+	public void setRk(RegistrovaniKorisnik rk) {
+		this.rk = rk;
+	}
+
 	@Override
 	public String toString() {
 		return "Oglas [id=" + id + ", naziv=" + naziv + ", opis=" + opis + ", aktivnoDo=" + aktivnoDo + ", path="
-				+ Arrays.toString(path) + ", status=" + status + "]";
+				+ Arrays.toString(path) + ", status=" + status + ",rk=" + rk + "]";
 	}
-
-	
-	
 	
 	
 	

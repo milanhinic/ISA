@@ -14,6 +14,9 @@ public interface RegistrovaniKorisnikRepository extends JpaRepository<Registrova
 	@Query("from RegistrovaniKorisnik where reg_korisnik_id = ?1")
 	public RegistrovaniKorisnik findByRegKorisnikId(Korisnik id);
 	
+	@Query("select rk from RegistrovaniKorisnik rk where rk.reg_korisnik_id = ?1")
+	public RegistrovaniKorisnik findByRegKorisnik(Korisnik id);
+	
 	@Query("select k from RegistrovaniKorisnik reg INNER JOIN reg.prijatelji prijatelji INNER JOIN prijatelji.reg_korisnik_id k where reg.reg_korisnik_id = ?1 order by k.ime, k.prezime asc")
 	public Page<Korisnik> getPrijatelji(Korisnik korisnik,Pageable pageable);
 	
@@ -25,7 +28,8 @@ public interface RegistrovaniKorisnikRepository extends JpaRepository<Registrova
 	
 	@Query("select count(k) from RegistrovaniKorisnik reg INNER JOIN reg.prijatelji prijatelji INNER JOIN prijatelji.reg_korisnik_id k where reg.reg_korisnik_id = ?1 and (UPPER(CONCAT(k.ime, ' ', k.prezime)) LIKE UPPER(?2) or UPPER(CONCAT(k.prezime, ' ', k.ime)) LIKE UPPER(?2))")
 	public Long countPrijateljiByNameAndSurname(Korisnik korisnik, String imeprezime);
-
+	
+	
 
 
 }

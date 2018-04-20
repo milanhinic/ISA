@@ -86,13 +86,18 @@ public class RegistrovaniKorisnikService implements RegistrovaniKorisnikInterfac
 	@Override
 	public Page<Korisnik> getPrijateljiByNameAndSurname(Korisnik korisnik, String imeprezime, Pageable pageable) {
 		
-		return registrovaniKorisnikRepository.getPrijateljiByNameAndSurname(korisnik,"%"+imeprezime.trim()+"%", pageable);
+		return registrovaniKorisnikRepository.getPrijateljiByNameAndSurname(korisnik, imeprezime.trim()+"%", pageable);
 	}
 
 	@Override
 	public Long countPrijateljiByNameAndSurname(Korisnik korisnik, String imeprezime) {
 		
 		return registrovaniKorisnikRepository.countPrijateljiByNameAndSurname(korisnik, "%"+imeprezime.trim()+"%");
+	}
+
+	@Override
+	public RegistrovaniKorisnik getKorisnikId(Korisnik k) {
+		return registrovaniKorisnikRepository.findByRegKorisnik(k);
 	}
 
 	

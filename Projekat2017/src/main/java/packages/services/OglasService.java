@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import packages.beans.Oglas;
+import packages.beans.RegistrovaniKorisnik;
 import packages.enumerations.OglasStatus;
 import packages.repositories.OglasRepository;
 import packages.serviceInterfaces.OglasInterface;
@@ -31,7 +32,7 @@ public class OglasService implements OglasInterface{
 
 	@Override
 	public Oglas getOglasByIdAndStatus(Long id, OglasStatus status) {
-		return null;
+		return oglasRepository.findByIdAndStatus(id, status);
 	}
 
 	@Override
@@ -54,5 +55,21 @@ public class OglasService implements OglasInterface{
 		return oglasRepository.findByStatus(status);
 	}
 
+	@Override
+	public Page<Oglas> getOglasiByRegKorAndStatus(RegistrovaniKorisnik rk, OglasStatus status, Pageable page) {
+		return oglasRepository.findByRegKorisnikAndStatus(rk, status, page);
+	}
+
+	@Override
+	public Page<Oglas> getAllOthersOglasi(RegistrovaniKorisnik rk, OglasStatus status, Pageable page) {
+		return oglasRepository.findOthersOglasi(rk, status, page);
+	}
+
+	@Override
+	public ArrayList<Oglas> getOglasiByRegKorAndStatusArray(RegistrovaniKorisnik rk, OglasStatus status) {
+		return oglasRepository.findByRegKorisnikAndStatusArray(rk, status);
+	}
+
+	
 	
 }

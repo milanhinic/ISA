@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import packages.beans.Oglas;
 import packages.beans.Ponuda;
+import packages.beans.RegistrovaniKorisnik;
 import packages.repositories.PonudaRepository;
 import packages.serviceInterfaces.PonudaInterface;
 
@@ -24,7 +25,7 @@ public class PonudaService implements PonudaInterface{
 
 	@Override
 	public Ponuda getPonuda(Long id) {
-		return pr.getOne(id);
+		return pr.findById(id);
 	}
 
 	@Override
@@ -40,6 +41,21 @@ public class PonudaService implements PonudaInterface{
 	@Override
 	public int deletePonuda(Long id) {
 		return (int) pr.deleteById(id);
+	}
+
+	@Override
+	public ArrayList<Ponuda> getPonudeByRegKor(RegistrovaniKorisnik rk) {
+		return pr.findByRk(rk);
+	}
+
+	@Override
+	public ArrayList<Ponuda> getPonudeByOglasAndRegKor(Oglas oglas, RegistrovaniKorisnik rk) {
+		return pr.findByOglasAndRk(oglas, rk);
+	}
+
+	@Override
+	public ArrayList<Ponuda> getTudjePonudeByOglasAndRegKor(Oglas oglas, RegistrovaniKorisnik rk) {
+		return pr.getTudjePonude(oglas, rk);
 	}
 
 }

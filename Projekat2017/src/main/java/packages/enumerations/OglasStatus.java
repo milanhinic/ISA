@@ -1,5 +1,5 @@
 package packages.enumerations;
 
 public enum OglasStatus {
-	A, N
+	A, N, P, R
 }

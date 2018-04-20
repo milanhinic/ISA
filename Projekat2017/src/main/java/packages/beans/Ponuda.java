@@ -24,15 +24,27 @@ public class Ponuda implements Serializable{
 	@Column(nullable = false)
 	private Double iznos;
 
+	@ManyToOne(optional = false)
+	private RegistrovaniKorisnik rk;
+	
+	
 	public Ponuda() {
 		
 	}
 
-	public Ponuda(Long id, Oglas oglas, Double iznos) {
+	public Ponuda(Long id, Oglas oglas, Double iznos, RegistrovaniKorisnik rk) {
 		super();
 		this.id = id;
 		this.oglas = oglas;
 		this.iznos = iznos;
+		this.rk = rk;
+	}
+	
+	public Ponuda(Oglas oglas, Double iznos, RegistrovaniKorisnik rk) {
+		super();
+		this.oglas = oglas;
+		this.iznos = iznos;
+		this.rk = rk;
 	}
 	
 	public Ponuda(Oglas oglas, Double iznos) {
@@ -49,15 +61,6 @@ public class Ponuda implements Serializable{
 		this.id = id;
 	}
 
-
-	public Oglas getOglasa() {
-		return oglas;
-	}
-
-	public void setOglasa(Oglas idOglasa) {
-		this.oglas = oglas;
-	}
-
 	public Double getIznos() {
 		return iznos;
 	}
@@ -66,10 +69,28 @@ public class Ponuda implements Serializable{
 		this.iznos = iznos;
 	}
 
+	public Oglas getOglas() {
+		return oglas;
+	}
+
+	public void setOglas(Oglas oglas) {
+		this.oglas = oglas;
+	}
+
+	public RegistrovaniKorisnik getRk() {
+		return rk;
+	}
+
+	public void setRk(RegistrovaniKorisnik rk) {
+		this.rk = rk;
+	}
+
 	@Override
 	public String toString() {
-		return "Ponuda [id=" + id + ", oglas=" + oglas + ", iznos=" + iznos + "]";
+		return "Ponuda [id=" + id + ", oglas=" + oglas + ", iznos=" + iznos + ", rk=" + rk + "]";
 	}
+
+	
 	
 	
 	

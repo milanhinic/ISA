@@ -17,6 +17,8 @@ public interface RegistrovaniKorisnikInterface {
 	
 	public RegistrovaniKorisnik getRegKorisnikByKorisnikId(Korisnik k);
 	
+	public RegistrovaniKorisnik getKorisnikId(Korisnik k);
+	
 	public Zahtev getZahtevByPosiljalacAndPrimalac(RegistrovaniKorisnik posiljalac, RegistrovaniKorisnik primalac);
 	
 	public Zahtev addZahtev(Zahtev zahtev);
