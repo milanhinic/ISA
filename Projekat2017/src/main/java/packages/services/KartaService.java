@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,14 +28,14 @@ public class KartaService implements KartaInterface{
 	}
 
 	@Override
-	@Transactional(readOnly = true, rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+	@Transactional(readOnly = true, rollbackFor = Exception.class, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
 	public Karta findByProjekcijaAndSediste(Projekcija projekcija, Sediste sediste) {
 		
 		return kartaRepository.findByProjekcijaAndSediste(projekcija, sediste);
 	}
 
 	@Override
-	@Transactional(readOnly = false, rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+	@Transactional(readOnly = false, rollbackFor = Exception.class, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
 	public ArrayList<Karta> createKarte(ArrayList<Karta> karte) throws KartaExistsException {
 		
 		ArrayList<Karta> retVal = new ArrayList<Karta>();
