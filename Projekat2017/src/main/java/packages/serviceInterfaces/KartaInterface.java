@@ -22,7 +22,7 @@ public interface KartaInterface {
 	public void findByProjekcijaAndSedisteBrza(Projekcija projekcija, Sediste sediste)  throws KartaExistsException;
 	
 	public Karta findBySediste(Sediste sediste);
-	
+
 	public ArrayList<Karta> vratiBrzeZa(PozBio pozBio, Date datum);
 	
 	public Karta getKarta(Long id);
