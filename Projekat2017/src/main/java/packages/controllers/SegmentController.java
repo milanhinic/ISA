@@ -10,7 +10,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,7 +26,7 @@ import packages.beans.Segment;
 import packages.beans.TipSegmenta;
 import packages.dto.SedisteDTO;
 import packages.dto.SegmentDTO;
-import packages.services.KartaService;
+import packages.serviceInterfaces.KartaInterface;
 import packages.services.SalaService;
 import packages.services.SedisteService;
 import packages.services.SegmentService;
@@ -46,7 +45,7 @@ public class SegmentController {
 	private SedisteService sds;
 	
 	@Autowired 
-	private KartaService ks;
+	private KartaInterface ks;
 	
 	@RequestMapping(value="vratiSegmenteSala/{idSala}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ArrayList<SegmentDTO>> vratiSegmenteZaSalu(@PathVariable int idSala) {
