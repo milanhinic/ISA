@@ -7,7 +7,8 @@ import packages.enumerations.KorisnikTip;
 import packages.validators.TelephoneValidation;
 
 public class KorisnikDTO {
-
+	
+	private Long id;
 	@NotNull(message = "Morate uneti email adresu")
 	@Size(max = 90, message = "Uneli ste prevelik broj karaktera za email adresu")
 	private String email;
@@ -25,8 +26,9 @@ public class KorisnikDTO {
 	
 	public KorisnikDTO() {}
 
-	public KorisnikDTO(String email, String ime, String prezime, String grad, String telefon) {
+	public KorisnikDTO(Long id, String email, String ime, String prezime, String grad, String telefon) {
 		super();
+		this.id = id;
 		this.email = email;
 		this.ime = ime;
 		this.prezime = prezime;
@@ -72,5 +74,13 @@ public class KorisnikDTO {
 
 	public void setTelefon(String telefon) {
 		this.telefon = telefon;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 }

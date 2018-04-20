@@ -136,6 +136,12 @@ public class RegKorisnikController {
 		
 		HttpHeaders httpHeader = new HttpHeaders();
 		httpHeader.add("message", "Uspesno izmenjena lozinka");
+		
+		if(result.hasErrors()) {
+			httpHeader.set("message", result.getAllErrors().get(0).getDefaultMessage());
+			return new ResponseEntity<Boolean>(false,httpHeader, HttpStatus.OK);
+		}
+		
 			
 		if(result.hasErrors()) {
 			httpHeader.set("message", result.getAllErrors().get(0).getDefaultMessage());
@@ -166,10 +172,14 @@ public class RegKorisnikController {
 	
 	@PreAuthorize("hasAuthority('RK')")
 	@RequestMapping(value="posaljiZahtev", method=RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Boolean> posaljiZahtev(@Valid @RequestBody KorisnikDTO primalacDTO,ServletRequest request) {
+	public ResponseEntity<Boolean> posaljiZahtev(@Valid @RequestBody KorisnikDTO primalacDTO,ServletRequest request, BindingResult result) {
 		
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		String token = httpRequest.getHeader("token");
+		
+		if(result.hasErrors()) {
+			return new ResponseEntity<Boolean>(false,HttpStatus.BAD_REQUEST);
+		}
 		
 		if(token == null) {
 			return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
@@ -231,7 +241,7 @@ public class RegKorisnikController {
 	
 	@PreAuthorize("hasAuthority('RK')")
 	@RequestMapping(value="prihvatiZahtev", method=RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Boolean> prihvatiZahtev(@Valid @RequestBody KorisnikDTO posiljalacDTO,ServletRequest request) {
+	public ResponseEntity<Boolean> prihvatiZahtev(@Valid @RequestBody KorisnikDTO posiljalacDTO,ServletRequest request, BindingResult result) {
 		
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		String token = httpRequest.getHeader("token");
@@ -250,6 +260,10 @@ public class RegKorisnikController {
 		
 		if(korisnikPrimalac.getStatus().equals(RegKorisnikStatus.N)) {
 			return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
+		}
+		
+		if(result.hasErrors()) {
+			return new ResponseEntity<Boolean>(false,HttpStatus.BAD_REQUEST);
 		}
 		
 		Korisnik korisnikPosiljalac = korisnikService.getKorisnikByEmail(posiljalacDTO.getEmail());
@@ -306,7 +320,7 @@ public class RegKorisnikController {
 	
 	@PreAuthorize("hasAuthority('RK')")
 	@RequestMapping(value="obrisiZahtev", method=RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Boolean> obrisiZahtev(@Valid @RequestBody KorisnikDTO drugiDTO,ServletRequest request) {
+	public ResponseEntity<Boolean> obrisiZahtev(@Valid @RequestBody KorisnikDTO drugiDTO,ServletRequest request, BindingResult result) {
 		
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		String token = httpRequest.getHeader("token");
@@ -318,6 +332,10 @@ public class RegKorisnikController {
 		String email = tokenUtils.getUsernameFromToken(token);
 
 		Korisnik logovanKorisnik = korisnikService.getKorisnikByEmail(email);
+		
+		if(result.hasErrors()) {
+			return new ResponseEntity<Boolean>(false,HttpStatus.BAD_REQUEST);
+		}
 		
 		if(logovanKorisnik==null) {
 			return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
@@ -376,7 +394,7 @@ public class RegKorisnikController {
 	
 	@PreAuthorize("hasAuthority('RK')")
 	@RequestMapping(value="obrisiPrijatelja", method=RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Boolean> obrisiPrijatelja(@Valid @RequestBody KorisnikDTO zaBrisanjeDTO,ServletRequest request) {
+	public ResponseEntity<Boolean> obrisiPrijatelja(@Valid @RequestBody KorisnikDTO zaBrisanjeDTO,ServletRequest request, BindingResult result) {
 		
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		String token = httpRequest.getHeader("token");
@@ -388,6 +406,10 @@ public class RegKorisnikController {
 		String email = tokenUtils.getUsernameFromToken(token);
 
 		Korisnik logovanKorisnik = korisnikService.getKorisnikByEmail(email);
+		
+		if(result.hasErrors()) {
+			return new ResponseEntity<Boolean>(false,HttpStatus.BAD_REQUEST);
+		}
 		
 		if(logovanKorisnik==null) {
 			return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
@@ -439,7 +461,7 @@ public class RegKorisnikController {
 	
 	@PreAuthorize("hasAuthority('RK')")
 	@RequestMapping(value="proveriPrijateljstvo", method=RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ArrayList<String>> proveriPrijateljstvo(@RequestBody ArrayList<KorisnikDTO> korisnici,ServletRequest request) {
+	public ResponseEntity<ArrayList<String>> proveriPrijateljstvo(@Valid @RequestBody ArrayList<KorisnikDTO> korisnici,ServletRequest request, BindingResult result) {
 		
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		String token = httpRequest.getHeader("token");
@@ -451,6 +473,10 @@ public class RegKorisnikController {
 		String email = tokenUtils.getUsernameFromToken(token);
 
 		Korisnik logovanKorisnik = korisnikService.getKorisnikByEmail(email);
+		
+		if(result.hasErrors()) {
+			return new ResponseEntity<ArrayList<String>>(HttpStatus.BAD_REQUEST);
+		}
 		
 		if(logovanKorisnik==null) {
 			return new ResponseEntity<ArrayList<String>>(HttpStatus.BAD_REQUEST);
