@@ -30,10 +30,10 @@ import packages.beans.Projekcija;
 import packages.dto.PrihodDTO;
 import packages.enumerations.PozBioTip;
 import packages.security.TokenUtils;
+import packages.serviceInterfaces.RezervacijaInterface;
 import packages.services.KorisnikService;
 import packages.services.PozBioService;
 import packages.services.ProjekcijaService;
-import packages.services.RezervacijaService;
 
 @RestController
 @RequestMapping(value = "app/")
@@ -52,7 +52,7 @@ public class PozBioController {
 	ProjekcijaService prs;
 	
 	@Autowired 
-	RezervacijaService rzs;
+	RezervacijaInterface rzs;
 	
 	@RequestMapping(value = "bioskopi/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
@@ -186,7 +186,8 @@ public class PozBioController {
 		return new ResponseEntity<PozBio>(null, httpHeader, HttpStatus.OK);
 	}
 	
-	@RequestMapping(value = "dodajNoviPozBio", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('AU')")
+	@RequestMapping(value = "secured/dodajNoviPozBio", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ResponseEntity<PozBio> dodajNoviPozBio(@RequestBody @Valid PozBio noviPozBio, BindingResult result) {
 		
@@ -218,7 +219,8 @@ public class PozBioController {
 		return new ResponseEntity<PozBio>(null,httpHeader, HttpStatus.OK);
 	}
 	
-	@RequestMapping(value = "izmeniPozBio", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('AU')")
+	@RequestMapping(value = "secured/izmeniPozBio", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ResponseEntity<PozBio> izmeniPozBio(@RequestBody @Valid PozBio pozBio, BindingResult result) {
 		
@@ -277,7 +279,7 @@ public class PozBioController {
 		return new ResponseEntity<ArrayList<ArrayList<PozBio>>>(retVal, HttpStatus.OK);
 	}
 	
-	@PreAuthorize("hasAuthority('RK')")
+	@PreAuthorize("hasAuthority('AU')")
 	@RequestMapping(value = "secured/prihod", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Double> izracunajPrihod(@RequestBody PrihodDTO inParam){
 		
@@ -327,7 +329,7 @@ public class PozBioController {
 		return new ResponseEntity<Double>(ukupno, HttpStatus.OK) ;
 	}
 	
-	@PreAuthorize("hasAuthority('RK')")
+	@PreAuthorize("hasAuthority('AU')")
 	@RequestMapping(value = "secured/dijagram", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ArrayList<Integer>> vratiPosete(@RequestBody PrihodDTO inParam){
 	

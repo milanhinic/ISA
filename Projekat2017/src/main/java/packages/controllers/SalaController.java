@@ -9,6 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,7 +33,8 @@ public class SalaController {
 	@Autowired
 	private PozBioService pbs;
 	
-	@RequestMapping(value = "dodajSalu/{pozBioId}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('AU')")
+	@RequestMapping(value = "secured/dodajSalu/{pozBioId}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ResponseEntity<Sala> dodajSalu(@RequestBody Sala novaSala, @PathVariable int pozBioId){
 		
@@ -82,7 +84,8 @@ public class SalaController {
 		return new ResponseEntity<Sala>(retVal, HttpStatus.OK);
 	}
 	
-	@RequestMapping(value = "izmeniSalu/{salaId}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('AU')")
+	@RequestMapping(value = "secured/izmeniSalu/{salaId}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ResponseEntity<Sala> izmeniSalu(@RequestBody @Valid Sala novaSala, @PathVariable int salaId, BindingResult result){
 		

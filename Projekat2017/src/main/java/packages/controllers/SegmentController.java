@@ -10,6 +10,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -86,8 +87,8 @@ public class SegmentController {
 		return new ResponseEntity<ArrayList<TipSegmenta>>(retVal, HttpStatus.OK);
 	}
 	
-	
-	@RequestMapping(value="sacuvajSegment/{idSala}/{idTip}", method= RequestMethod.POST, consumes= MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('AU')")
+	@RequestMapping(value="secured/sacuvajSegment/{idSala}/{idTip}", method= RequestMethod.POST, consumes= MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ResponseEntity<Segment> sacuvajSegment(@PathVariable int idSala, @PathVariable int idTip, @RequestParam int brojSedista){
 		HttpHeaders header = new HttpHeaders();
@@ -135,8 +136,8 @@ public class SegmentController {
 		return new ResponseEntity<Segment>(retVal, HttpStatus.OK);
 	}
 	
-	
-	@RequestMapping(value="izmeniSegment", method= RequestMethod.PUT, consumes= MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('AU')")
+	@RequestMapping(value="secured/izmeniSegment", method= RequestMethod.PUT, consumes= MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ResponseEntity<Segment> izmeniSegment(@RequestBody @Valid Segment segment, BindingResult result){
 						
@@ -152,8 +153,8 @@ public class SegmentController {
 		return new ResponseEntity<Segment>(retVal, HttpStatus.OK);
 	}
 	
-	
-	@RequestMapping(value="sacuvajTipSegmenta", method= RequestMethod.POST, consumes= MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('AU')")
+	@RequestMapping(value="secured/sacuvajTipSegmenta", method= RequestMethod.POST, consumes= MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ResponseEntity<TipSegmenta> sacuvajTipSegment(@RequestBody @Valid TipSegmenta noviTip, BindingResult result){
 						
@@ -186,8 +187,8 @@ public class SegmentController {
 		return new ResponseEntity<ArrayList<Sediste>>(retVal, HttpStatus.OK);
 	}
 	
-	
-	@RequestMapping(value="dodajSedista/{id}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('AU')")
+	@RequestMapping(value="secured/dodajSedista/{id}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Segment> dodajSedista(@PathVariable int id, @RequestParam int brojSedista){
 		
 		HttpHeaders header = new HttpHeaders();
@@ -215,8 +216,8 @@ public class SegmentController {
 		return new ResponseEntity<Segment>(segment, HttpStatus.OK);
 	}
 	
-	
-	@RequestMapping(value="obrisiSedista", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('AU')")
+	@RequestMapping(value="secured/obrisiSedista", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ResponseEntity<String> obrisiSedista(@RequestBody ArrayList<Long> zaBrisanje){
 		
@@ -237,18 +238,9 @@ public class SegmentController {
 		
 		return new ResponseEntity<String>("Brisanje uspesno izvrseno.", HttpStatus.OK);
 	}
-	
-	@RequestMapping(value="formirajBrzu", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	public ResponseEntity<String> formirajBrzu(@RequestBody ArrayList<Long> zaBrzu){
 		
-		
-		
-		return null;
-	}
-	
-	
-	@RequestMapping(value="pripremiZaBrzu/{idSeg}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('AU')")
+	@RequestMapping(value="secured/pripremiZaBrzu/{idSeg}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ArrayList<SedisteDTO>> pripremiZaBrzu(@PathVariable int idSeg){
 		
 		HttpHeaders header = new HttpHeaders();

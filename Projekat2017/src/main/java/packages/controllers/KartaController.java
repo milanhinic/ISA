@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import javax.mail.MessagingException;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 
@@ -30,18 +31,19 @@ import packages.beans.Projekcija;
 import packages.beans.RegistrovaniKorisnik;
 import packages.beans.Rezervacija;
 import packages.beans.Sediste;
+import packages.exceptions.KartaExistsException;
 import packages.security.TokenUtils;
 import packages.serviceInterfaces.KartaInterface;
-import packages.services.KartaService;
+import packages.serviceInterfaces.RezervacijaInterface;
+import packages.services.EmailService;
 import packages.services.KorisnikService;
 import packages.services.PozBioService;
 import packages.services.ProjekcijaService;
 import packages.services.RegistrovaniKorisnikService;
-import packages.services.RezervacijaService;
 import packages.services.SedisteService;
 
 @RestController
-@RequestMapping(value = "app/")
+@RequestMapping(value = "app/secured/")
 public class KartaController {
 	
 	@Autowired
@@ -54,7 +56,7 @@ public class KartaController {
 	private ProjekcijaService ps;
 	
 	@Autowired
-	private RezervacijaService rzs;
+	private RezervacijaInterface rzs;
 	
 	@Autowired
 	private PozBioService pbs;
@@ -67,7 +69,11 @@ public class KartaController {
 	
 	@Autowired
 	private RegistrovaniKorisnikService regKorisnikService;
+	
+	@Autowired 
+	private EmailService es;
 
+	@PreAuthorize("hasAuthority('AU')")
 	@RequestMapping(value = "formirajBrzu/{idProj}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ResponseEntity<Boolean> formirajBrzu(@RequestBody ArrayList<Long> zaBrzu, @PathVariable int idProj){
@@ -86,20 +92,36 @@ public class KartaController {
 			return new ResponseEntity<>(null, header, HttpStatus.OK);
 		}
 		
+		ArrayList<Sediste> sedista = new ArrayList<Sediste>();
+		
 		if(!zaBrzu.isEmpty() ){
 			for(Long sedId : zaBrzu) {
 				Sediste sediste = ss.getSediste(sedId);
-				if(ks.findByProjekcijaAndSedisteBrza(projekcija, sediste)) {
-					Karta brza = new Karta(null, projekcija, sediste, true);
-					ks.createKarta(brza);
-					System.out.println(brza.toString());
+				sedista.add(sediste);
+				if(sediste == null) {
+					header.add("message", "Nepostojece sediste!");
+					return new ResponseEntity<>(null, header, HttpStatus.OK);
 				}
 			}
+		}
+		
+		ArrayList<Karta> brzeKarte = new ArrayList<Karta>();
+		
+		for(Sediste tempSed : sedista) {
+			Karta brza = new Karta(null, projekcija, tempSed, true);
+			brzeKarte.add(brza);
+		}
+		
+		try {
+			ks.createKarte(brzeKarte);
+		} catch (KartaExistsException e) {
+			return null;
 		}
 		
 		return new ResponseEntity<Boolean>(true, HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasAuthority('RK')")
 	@RequestMapping(value = "vratiBrzu/{idPozBio}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ResponseEntity<ArrayList<Karta>> formirajBrzu(@PathVariable int idPozBio, @RequestParam String datum){
@@ -125,13 +147,21 @@ public class KartaController {
 			return new ResponseEntity<>(null, header, HttpStatus.OK);
 		}
 		
-		ArrayList<Karta> retVal = ks.vratiBrzeZa(pozBio, pocetak);
+		ArrayList<Karta> tempRetVal = ks.vratiBrzeZa(pozBio, pocetak);
+		ArrayList<Karta> retVal = new ArrayList<Karta>();
+		
+		for(Karta k : tempRetVal) {
+			ArrayList<Rezervacija> tempRes = rzs.findByKarta(k);
+			if(tempRes.size() == 0) {
+				retVal.add(k);
+			}
+		}
 		
 		return new ResponseEntity<ArrayList<Karta>>(retVal, HttpStatus.OK);
 	}
 	
 	@PreAuthorize("hasAuthority('RK')")
-	@RequestMapping(value = "rezervisiBrzo/{idKarta}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "rezervisiBrzo/{idKarta}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Boolean> rezervisiBrzo(@PathVariable int idKarta, ServletRequest request){
 		
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
@@ -156,8 +186,25 @@ public class KartaController {
 			return null;
 		}
 		
+		System.out.println(karta.toString());
+		
 		Rezervacija novaRez = new Rezervacija(null, karta, formira, null, null);
-		rzs.createRezervacija(novaRez);
+		try {
+			novaRez = rzs.createBrzaRezervacija(novaRez);
+		} catch (KartaExistsException e) {
+			
+			return new ResponseEntity<Boolean>(false, HttpStatus.OK);
+		}
+		
+		ArrayList<Rezervacija> retVal = new ArrayList<Rezervacija>();
+		retVal.add(novaRez);
+		
+		try {
+			es.sendRezervacijaMail(retVal);
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Email nije poslat.");
+		}
 		
 		return new ResponseEntity<Boolean>(true, HttpStatus.OK);
 	}

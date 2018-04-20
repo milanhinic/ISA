@@ -64,14 +64,14 @@ public class KartaService implements KartaInterface{
 	}
 
 	@Override
-	public boolean findByProjekcijaAndSedisteBrza(Projekcija projekcija, Sediste sediste) {
+	@Transactional(readOnly = true, rollbackFor = Exception.class, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
+	public void findByProjekcijaAndSedisteBrza(Projekcija projekcija, Sediste sediste) throws KartaExistsException{
 		// TODO Auto-generated method stub
 		
-		if(kartaRepository.findByProjekcijaAndSediste(projekcija, sediste) == null) {
-			return true;
+		if(kartaRepository.findByProjekcijaAndSediste(projekcija, sediste) != null) {
+			throw new KartaExistsException("Mesto je vec rezervisano");	
 		}
 		
-		return false;
 	}
 
 	@Override
@@ -87,7 +87,12 @@ public class KartaService implements KartaInterface{
 	}
 		
 	@Override
-	public Karta createKarta(Karta karta) {
+	@Transactional(readOnly = true, rollbackFor = Exception.class, propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE)
+	public Karta createKarta(Karta karta) throws KartaExistsException{
+		
+		if(findByProjekcijaAndSediste(karta.getProjekcija(), karta.getSediste()) != null) {
+			throw new KartaExistsException("Mesto je vec rezervisano");	
+		}
 		
 		return kartaRepository.save(karta);
 

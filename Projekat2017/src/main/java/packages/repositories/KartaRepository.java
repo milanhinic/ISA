@@ -20,4 +20,5 @@ public interface KartaRepository extends JpaRepository<Karta, Long>{
 	@Query("select k from Karta k INNER JOIN k.projekcija p INNER JOIN p.sala s where s.pozBio = ?1 and p.datum >= ?2 and k.brzaRezervacija = true")
 	public ArrayList<Karta> vratiBrzeZa(PozBio pozBio, Date datum);
 	
+	
 }

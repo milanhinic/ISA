@@ -11,7 +11,7 @@ import packages.exceptions.KartaExistsException;
 
 public interface KartaInterface {
 	
-	public Karta createKarta(Karta karta);
+	public Karta createKarta(Karta karta) throws KartaExistsException;
 	
 	public ArrayList<Karta> createKarte(ArrayList<Karta> karte) throws KartaExistsException;
 	
@@ -19,7 +19,7 @@ public interface KartaInterface {
 	
 	public Karta findByProjekcijaAndSediste(Projekcija projekcija, Sediste sediste);
 	
-	public boolean findByProjekcijaAndSedisteBrza(Projekcija projekcija, Sediste sediste);
+	public void findByProjekcijaAndSedisteBrza(Projekcija projekcija, Sediste sediste)  throws KartaExistsException;
 	
 	public Karta findBySediste(Sediste sediste);
 	

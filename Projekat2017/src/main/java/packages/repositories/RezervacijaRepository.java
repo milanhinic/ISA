@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import packages.beans.Karta;
 import packages.beans.PozBio;
 import packages.beans.PredFilm;
 import packages.beans.Projekcija;
@@ -66,4 +67,6 @@ public interface RezervacijaRepository extends JpaRepository<Rezervacija, Long>{
 	
 	@Query("select count(r) from Rezervacija r INNER JOIN r.karta k INNER JOIN k.projekcija p INNER JOIN p.sala s where s.pozBio = ?1 and p.datum between ?2 and ?3 ")
 	public Integer countVisitsForDate(PozBio pozBio, Date dayStart, Date dayEnd);
+	
+	public ArrayList<Rezervacija> findByKarta(Karta karta);
 }

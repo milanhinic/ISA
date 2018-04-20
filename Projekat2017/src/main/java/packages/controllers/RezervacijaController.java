@@ -30,23 +30,20 @@ import packages.beans.Korisnik;
 import packages.beans.Projekcija;
 import packages.beans.RegistrovaniKorisnik;
 import packages.beans.Rezervacija;
-import packages.beans.Sala;
 import packages.beans.Sediste;
 import packages.beans.Segment;
 import packages.dto.KorisnikSedisteDTO;
 import packages.dto.RezervacijaDTO;
 import packages.dto.RezervisiDTO;
 import packages.dto.SedisteDTO;
-import packages.dto.SegmentDTO;
 import packages.exceptions.KartaExistsException;
 import packages.security.TokenUtils;
 import packages.serviceInterfaces.KartaInterface;
+import packages.serviceInterfaces.RezervacijaInterface;
 import packages.services.EmailService;
-import packages.services.KartaService;
 import packages.services.KorisnikService;
 import packages.services.ProjekcijaService;
 import packages.services.RegistrovaniKorisnikService;
-import packages.services.RezervacijaService;
 import packages.services.SedisteService;
 import packages.services.SegmentService;
 
@@ -58,7 +55,7 @@ public class RezervacijaController {
 	private KartaInterface kartaService;
 	
 	@Autowired
-	private RezervacijaService rezervacijaService;
+	private RezervacijaInterface rezervacijaService;
 	
 	@Autowired
 	private KorisnikService korisnikService;
