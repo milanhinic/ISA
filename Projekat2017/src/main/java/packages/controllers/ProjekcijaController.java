@@ -15,6 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -32,7 +33,7 @@ import packages.services.ProjekcijaService;
 import packages.services.SalaService;
 
 @RestController
-@RequestMapping(value="/app")
+@RequestMapping(value="app/")
 public class ProjekcijaController {
 
 	@Autowired
@@ -48,7 +49,8 @@ public class ProjekcijaController {
 	private PozBioService pbs;
 	
 	
-	@RequestMapping(value="/sacuvajProjekciju", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('AU')")
+	@RequestMapping(value="secured/sacuvajProjekciju", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Projekcija> dodajProjekciju(@RequestParam int idSale, @RequestParam int idPredFilm, @RequestParam String datum) {
 		
 		HttpHeaders header = new HttpHeaders();

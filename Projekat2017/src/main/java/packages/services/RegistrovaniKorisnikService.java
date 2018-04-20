@@ -92,7 +92,7 @@ public class RegistrovaniKorisnikService implements RegistrovaniKorisnikInterfac
 	@Override
 	public Long countPrijateljiByNameAndSurname(Korisnik korisnik, String imeprezime) {
 		
-		return registrovaniKorisnikRepository.countPrijateljiByNameAndSurname(korisnik, "%"+imeprezime.trim()+"%");
+		return registrovaniKorisnikRepository.countPrijateljiByNameAndSurname(korisnik, imeprezime.trim()+"%");
 	}
 
 	@Override

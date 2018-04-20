@@ -55,7 +55,7 @@ public class LoginController {
 			
 			token = tokenUtils.generateToken(CustomUserDetailsFactory.createCustomUserDetails(korisnik));
 		}
-				
+	
 		return new ResponseEntity<String>(token, httpHeader,HttpStatus.OK);
 	}
 	

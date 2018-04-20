@@ -10,6 +10,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,11 +20,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import packages.beans.Karta;
 import packages.beans.Sala;
 import packages.beans.Sediste;
 import packages.beans.Segment;
 import packages.beans.TipSegmenta;
+import packages.dto.SedisteDTO;
 import packages.dto.SegmentDTO;
+import packages.serviceInterfaces.KartaInterface;
 import packages.services.SalaService;
 import packages.services.SedisteService;
 import packages.services.SegmentService;
@@ -40,6 +44,9 @@ public class SegmentController {
 	
 	@Autowired
 	private SedisteService sds;
+	
+	@Autowired 
+	private KartaInterface ks;
 	
 	@RequestMapping(value="vratiSegmenteSala/{idSala}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ArrayList<SegmentDTO>> vratiSegmenteZaSalu(@PathVariable int idSala) {
@@ -80,7 +87,8 @@ public class SegmentController {
 		return new ResponseEntity<ArrayList<TipSegmenta>>(retVal, HttpStatus.OK);
 	}
 	
-	@RequestMapping(value="sacuvajSegment/{idSala}/{idTip}", method= RequestMethod.POST, consumes= MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('AU')")
+	@RequestMapping(value="secured/sacuvajSegment/{idSala}/{idTip}", method= RequestMethod.POST, consumes= MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ResponseEntity<Segment> sacuvajSegment(@PathVariable int idSala, @PathVariable int idTip, @RequestParam int brojSedista){
 		HttpHeaders header = new HttpHeaders();
@@ -128,7 +136,8 @@ public class SegmentController {
 		return new ResponseEntity<Segment>(retVal, HttpStatus.OK);
 	}
 	
-	@RequestMapping(value="izmeniSegment", method= RequestMethod.PUT, consumes= MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('AU')")
+	@RequestMapping(value="secured/izmeniSegment", method= RequestMethod.PUT, consumes= MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ResponseEntity<Segment> izmeniSegment(@RequestBody @Valid Segment segment, BindingResult result){
 						
@@ -144,7 +153,8 @@ public class SegmentController {
 		return new ResponseEntity<Segment>(retVal, HttpStatus.OK);
 	}
 	
-	@RequestMapping(value="sacuvajTipSegmenta", method= RequestMethod.POST, consumes= MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('AU')")
+	@RequestMapping(value="secured/sacuvajTipSegmenta", method= RequestMethod.POST, consumes= MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ResponseEntity<TipSegmenta> sacuvajTipSegment(@RequestBody @Valid TipSegmenta noviTip, BindingResult result){
 						
@@ -177,7 +187,8 @@ public class SegmentController {
 		return new ResponseEntity<ArrayList<Sediste>>(retVal, HttpStatus.OK);
 	}
 	
-	@RequestMapping(value="dodajSedista/{id}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('AU')")
+	@RequestMapping(value="secured/dodajSedista/{id}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Segment> dodajSedista(@PathVariable int id, @RequestParam int brojSedista){
 		
 		HttpHeaders header = new HttpHeaders();
@@ -205,18 +216,63 @@ public class SegmentController {
 		return new ResponseEntity<Segment>(segment, HttpStatus.OK);
 	}
 	
-	@RequestMapping(value="obrisiSedista", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('AU')")
+	@RequestMapping(value="secured/obrisiSedista", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ResponseEntity<String> obrisiSedista(@RequestBody ArrayList<Long> zaBrisanje){
 		
+		HttpHeaders header = new HttpHeaders();
+		
 		if(!zaBrisanje.isEmpty()){
 			for(Long brisiId : zaBrisanje) {
+				Sediste brisiSed = sds.getSediste(brisiId);
+			
+				if(ks.findBySediste(brisiSed) != null) {
+					header.add("message", "Barem jedno sediste je rezervisano, brisanje je onemoguceno!");
+					return new ResponseEntity<>(null, header, HttpStatus.OK);
+				}
+			
 				sds.deleteSediste(brisiId);		
 			}
 		}
 		
 		return new ResponseEntity<String>("Brisanje uspesno izvrseno.", HttpStatus.OK);
 	}
+		
+	@PreAuthorize("hasAuthority('AU')")
+	@RequestMapping(value="secured/pripremiZaBrzu/{idSeg}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ArrayList<SedisteDTO>> pripremiZaBrzu(@PathVariable int idSeg){
+		
+		HttpHeaders header = new HttpHeaders();
+		
+		Segment segment = ss.getSegment(new Long(idSeg));
+		
+		if(segment == null) {
+			header.add("message", "Nepostojeci segment!");
+			return new ResponseEntity<>(null, header, HttpStatus.OK);
+		}
+		
+		ArrayList<Sediste> sedista = sds.getSedistaBySegment(segment);
+		ArrayList<SedisteDTO> retVal = new ArrayList<SedisteDTO>();
+		
+		if(!sedista.isEmpty()) {
+			for(Sediste tempSed : sedista) {
+				SedisteDTO forRet = null;
+				Karta karta = ks.findBySediste(tempSed);
+				if(karta == null) {
+					forRet = new SedisteDTO(tempSed, false);
+				}else {
+					forRet = new SedisteDTO(tempSed, true);
+				}
+				
+				retVal.add(forRet);
+			}
+		}
+		
+		return new ResponseEntity<ArrayList<SedisteDTO>>(retVal, HttpStatus.OK);
+	}
+	
+	
 
 
 }

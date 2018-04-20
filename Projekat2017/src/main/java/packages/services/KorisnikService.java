@@ -61,14 +61,14 @@ public class KorisnikService implements KorisnikInterface{
 	public Page<Korisnik> getKorisniciImePrezime(RegKorisnikStatus status, KorisnikTip tip, String email,
 			String imeprezime, Pageable pageable) {
 		
-		return korisnikRepository.getKorisniciByStatusAndTipAndEmailNotAndNameSurname(status, tip, email, "%"+imeprezime.trim()+"%", pageable);
+		return korisnikRepository.getKorisniciByStatusAndTipAndEmailNotAndNameSurname(status, tip, email, imeprezime.trim()+"%", pageable);
 	}
 
 	@Override
 	public Long countKorisniciImePrezime(RegKorisnikStatus status, KorisnikTip tip, String email,
 			String imeprezime) {
 		
-		return korisnikRepository.getKorisniciCountByStatusAndTipAndEmailNotAndNameSurname(status, tip, email, "%"+imeprezime.trim()+"%");
+		return korisnikRepository.getKorisniciCountByStatusAndTipAndEmailNotAndNameSurname(status, tip, email, imeprezime.trim()+"%");
 	}
 	public Page<Korisnik> getAllKorisnikList(RegKorisnikStatus status, KorisnikTip tip, Pageable pageable) {
 		

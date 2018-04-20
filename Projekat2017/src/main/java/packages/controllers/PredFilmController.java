@@ -34,7 +34,8 @@ public class PredFilmController {
 	@Autowired
 	private PredFilmService pfs;
 	
-	@RequestMapping(value = "sacuvajPredFilm", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('AU')")
+	@RequestMapping(value = "secured/sacuvajPredFilm", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ResponseEntity<PredFilm> sacuvajPredFilm(@RequestBody @Valid PredFilm noviPredFilm, BindingResult result){
 		
@@ -55,7 +56,8 @@ public class PredFilmController {
 		return new ResponseEntity<PredFilm>(null,httpHeader, HttpStatus.OK);
 	}
 	
-	@RequestMapping(value = "izmeniPredFilm", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasAuthority('AU')")
+	@RequestMapping(value = "secured/izmeniPredFilm", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public ResponseEntity<PredFilm> izmeniPredFilm(@RequestBody @Valid PredFilm predFilm, BindingResult result){
 		
