@@ -68,6 +68,12 @@ public class ProjekcijaService implements ProjekcijaInterface{
 		// TODO Auto-generated method stub
 		return pr.countByPredFilm(predFilm);
 	}
+
+	@Override
+	public void deleteProjekcija(Projekcija projekcija) {
+		// TODO Auto-generated method stub
+		pr.delete(projekcija);
+	}
 	
 
 }
