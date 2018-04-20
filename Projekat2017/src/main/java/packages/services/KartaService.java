@@ -3,6 +3,7 @@ package packages.services;
 import java.util.ArrayList;
 import java.util.Date;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -22,12 +23,6 @@ public class KartaService implements KartaInterface{
 
 	@Autowired
 	private KartaRepository kartaRepository;
-
-	@Override
-	public Karta createKarta(Karta karta) {
-		
-		return kartaRepository.save(karta);
-	}
 
 	@Override
 	public void deleteKarta(Karta karta) {
@@ -62,7 +57,6 @@ public class KartaService implements KartaInterface{
 		return retVal;
 	}
 
-
 	@Override
 	public Karta findBySediste(Sediste sediste) {
 		// TODO Auto-generated method stub
@@ -90,6 +84,13 @@ public class KartaService implements KartaInterface{
 	public Karta getKarta(Long id) {
 		// TODO Auto-generated method stub
 		return kartaRepository.getOne(id);
+	}
+		
+	@Override
+	public Karta createKarta(Karta karta) {
+		
+		return kartaRepository.save(karta);
+
 	}
 	
 }

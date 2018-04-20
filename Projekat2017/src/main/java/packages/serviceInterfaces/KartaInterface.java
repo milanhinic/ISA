@@ -13,9 +13,9 @@ public interface KartaInterface {
 	
 	public Karta createKarta(Karta karta);
 	
-	public void deleteKarta(Karta karta);
-	
 	public ArrayList<Karta> createKarte(ArrayList<Karta> karte) throws KartaExistsException;
+	
+	public void deleteKarta(Karta karta);
 	
 	public Karta findByProjekcijaAndSediste(Projekcija projekcija, Sediste sediste);
 	
